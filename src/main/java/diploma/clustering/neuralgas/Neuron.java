@@ -64,7 +64,7 @@ public class Neuron {
                         (coordinatesVector, neighbour.getCoordinatesVector());
                 totalNumberOfPointsOfAllNeighbours += numberOfPointsOfNeighbour;
             }
-            threshold = ((Math.pow(totalDistanceBetweenNeuronAndItsPoints, 1) + Math.pow(totalDistanceBetweenNeuronAndAllNeighbours, 1)) / (points
+            threshold = ((Math.pow(totalDistanceBetweenNeuronAndItsPoints, 2) + Math.pow(totalDistanceBetweenNeuronAndAllNeighbours, 2)) / (points
                     .size() + totalNumberOfPointsOfAllNeighbours));
         }
         else {

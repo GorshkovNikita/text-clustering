@@ -104,11 +104,12 @@ public class Main {
             first[i] = 0.0;
             second[i] = 0.1;
         }
-        neuralGas.init(first, second);
-        neuralGas.runAdaptiveIncrementalClustering(
-                convertVectorModelsToPoints(
-                        process(Paths.get("D:\\MSU\\semseter-3\\hadoop-samples\\myinput\\sample-tweets-champions-league-first-1000.txt"))));
-//        neuralGas.runStandardGrowingNeuralGas(PointsCreator.createTwoDimensionalPoints(100000));
+//        neuralGas.init(first, second);
+//        neuralGas.runAdaptiveIncrementalClustering(
+//                convertVectorModelsToPoints(
+//                        process(Paths.get("D:\\MSU\\semseter-3\\hadoop-samples\\myinput\\sample-tweets-champions-league-first-1000.txt"))));
+        neuralGas.init(new Double[] { 0.0, 0.0}, new Double[] {0.1, 0.1});
+        neuralGas.runAdaptiveIncrementalClustering(PointsCreator.createTwoDimensionalPoints(100000));
         neuralGas.printInfo();
 //        TF_IDF tf_idf = new TF_IDF();
     }
