@@ -59,7 +59,6 @@ public class TextNormalizer {
     public String normalizeToString(String text) {
         String resultString = "";
         Annotation document = normalize(text);
-
         List<CoreLabel> tokens = document.get(CoreAnnotations.TokensAnnotation.class);
 
         for(CoreMap token: tokens) {

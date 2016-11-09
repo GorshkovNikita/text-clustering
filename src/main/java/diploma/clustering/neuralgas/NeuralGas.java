@@ -288,7 +288,7 @@ public class NeuralGas {
                 // TODO: создал связь, так как, если новый нейрон был очень далеко от остальных,
                 // TODO: он не имел с ними связи, следовательно не имел соседей, и могло так произойти,
                 // TODO: что его первоначальный threshold был равен 0, из-за этого даже точки, находящиеся близко создавали новые нейроны
-//                createConnectionBetweenNeurons(nearestNeurons[0], newNeuron);
+                createConnectionBetweenNeurons(nearestNeurons[0], newNeuron);
             }
             else if (VectorOperations.euclideanDistance(
                     dataPoint.getCoordinatesVector(), nearestNeurons[1].getCoordinatesVector()) > nearestNeurons[1].getThreshold()) {

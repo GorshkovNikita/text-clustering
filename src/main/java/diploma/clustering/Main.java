@@ -1,7 +1,5 @@
 package diploma.clustering;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import diploma.clustering.neuralgas.NeuralGas;
 import diploma.clustering.neuralgas.Point;
 
@@ -22,7 +20,7 @@ public class Main {
     public static Map<String, Map<String, Double>> tfTable = new HashMap<>();
 
     public static Map<String, Double[]> process(Path filePath) {
-        TF_IDF tf_idf = new TF_IDF();
+        TfIdf tfIdf = new TfIdf();
         List<String> tweets = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filePath.toString()))) {
             String line = null;
@@ -30,12 +28,12 @@ public class Main {
                 line = br.readLine();
                 if (line != null && !line.equals("")) {
                     String[] lines = line.split("=");
-                    Map<String, Double> tf = tf_idf.tf(lines[0], lines[1]);
+                    Map<String, Double> tf = tfIdf.tfIdfForSpecificDocument(lines[0]);//, lines[1]);
                     tfTable.put(lines[1], tf);
                 }
             } while (line != null);
             List<String> words = new ArrayList<>();
-            for (Map.Entry<String, Integer> entry: tf_idf.numberOfDocumentsWithWord.entrySet()) {
+            for (Map.Entry<String, Integer> entry: tfIdf.getNumberOfDocumentsWithTerm().entrySet()) {
                 if (entry.getValue() > 5)
                     words.add(entry.getKey());
             }
@@ -45,8 +43,8 @@ public class Main {
             ex.printStackTrace();
         }
 
-        Map<String, Integer> sortedMap = MapUtil.sortByValue(tf_idf.numberOfDocumentsWithWord);
-        Map<String, Double> sortedMapTwo = MapUtil.sortByValue(tf_idf.idfMap);
+        Map<String, Integer> sortedMap = MapUtil.sortByValue(tfIdf.getNumberOfDocumentsWithTerm());
+//        Map<String, Double> sortedMapTwo = MapUtil.sortByValue(tf_idf.idfMap);
         String[] significantWordsVector = significantWordsVector(sortedMap.keySet());
         Map<String, Double[]> vectorModels = new HashMap<>();
         for (Map.Entry<String, Map<String, Double>> tweetAndItsTf: tfTable.entrySet()) {
@@ -56,15 +54,15 @@ public class Main {
             Map<String, Double> tf = tweetAndItsTf.getValue();
             for (int j = 0; j < NUMBER_OF_SIGNIFICANT_WORDS; j++) {
                 if (tf.containsKey(significantWordsVector[j]))
-                    vectorModel[j] = tf.get(significantWordsVector[j]) * tf_idf.idfMap.get(significantWordsVector[j]);
+                    vectorModel[j] = tf.get(significantWordsVector[j]) * tfIdf.getTermIdf(significantWordsVector[j]);
                 else vectorModel[j] = 0.0;
             }
-//            for (Map.Entry<String, Double> tf: tweetAndItsTf.getValue().entrySet()) {
-//                while (!tf.getKey().equals(significantWordsVector[i])) {
+//            for (Map.Entry<String, Double> tfIdfForSpecificDocument: tweetAndItsTf.getValue().entrySet()) {
+//                while (!tfIdfForSpecificDocument.getKey().equals(significantWordsVector[i])) {
 //                    vectorModel[i] = 0.0;
 //                    i++;
 //                }
-//                vectorModel[i] = tf.getValue() * tf_idf.idfMap.get(tf.getKey());
+//                vectorModel[i] = tfIdfForSpecificDocument.getValue() * tf_idf.idfMap.get(tfIdfForSpecificDocument.getKey());
 //                i++;
 //            }
             vectorModels.put(tweet, vectorModel);
@@ -96,6 +94,7 @@ public class Main {
         return words;
     }
 
+    @SuppressWarnings("ConstantConditions")
     public static void main(String[] args) {
         NeuralGas neuralGas = NeuralGas.getInstance();
         Double[] first = new Double[NUMBER_OF_SIGNIFICANT_WORDS];
@@ -104,12 +103,13 @@ public class Main {
             first[i] = 0.0;
             second[i] = 0.1;
         }
-//        neuralGas.init(first, second);
-//        neuralGas.runAdaptiveIncrementalClustering(
-//                convertVectorModelsToPoints(
-//                        process(Paths.get("D:\\MSU\\semseter-3\\hadoop-samples\\myinput\\sample-tweets-champions-league-first-1000.txt"))));
-        neuralGas.init(new Double[] { 0.0, 0.0}, new Double[] {0.1, 0.1});
-        neuralGas.runAdaptiveIncrementalClustering(PointsCreator.createTwoDimensionalPoints(100000));
+        neuralGas.init(first, second);
+        neuralGas.runAdaptiveIncrementalClustering(
+                convertVectorModelsToPoints(
+                        process(Paths.get(Main.class.getClassLoader().getResource("sample-tweets-champions-league-first-1000.txt").getFile()
+                                .substring(1)))));
+//        neuralGas.init(new Double[] { 0.0, 0.0}, new Double[] {0.1, 0.1});
+//        neuralGas.runAdaptiveIncrementalClustering(PointsCreator.createTwoDimensionalPoints(100000));
         neuralGas.printInfo();
 //        TF_IDF tf_idf = new TF_IDF();
     }

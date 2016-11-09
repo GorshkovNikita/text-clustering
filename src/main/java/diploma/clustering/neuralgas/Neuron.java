@@ -1,5 +1,6 @@
 package diploma.clustering.neuralgas;
 
+import diploma.clustering.TfIdf;
 import diploma.clustering.VectorOperations;
 
 import java.util.*;
@@ -34,6 +35,8 @@ public class Neuron {
      * Увеличивается при вызове метода {@link diploma.clustering.neuralgas.NeuralGas#createNewNeuron(Neuron)}
      */
     private int id = -1;
+
+    private TfIdf tfIdf;
 
     public Neuron(Double[] coordinatesVector) {
         this.coordinatesVector = coordinatesVector;
