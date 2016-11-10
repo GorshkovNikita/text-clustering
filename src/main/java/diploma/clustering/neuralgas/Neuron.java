@@ -1,6 +1,6 @@
 package diploma.clustering.neuralgas;
 
-import diploma.clustering.TfIdf;
+import diploma.clustering.tfidf.TfIdf;
 import diploma.clustering.VectorOperations;
 
 import java.util.*;
@@ -54,7 +54,7 @@ public class Neuron {
         Double threshold;
         final boolean[] neighboursHavePoints = new boolean[1];
             neighbours.forEach((node) -> neighboursHavePoints[0] = node.getPoints().size() != 0);
-        //TODO: условие для новых нейронов без соседей
+        // TODO: условие для новых нейронов без соседей
         if (neighbours.size() == 0 && points.size() <= 100) {
             threshold = NeuralGas.getInstance().getDistanceBetweenGivenAndNearestNeurons(this);
         }

@@ -2,6 +2,7 @@ package diploma.clustering;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import diploma.clustering.tfidf.TfIdf;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -154,10 +155,14 @@ public class TfIdfTest {
         tfIdfMapForSpecificDocument.put("too", TfIdf.getGlobalDocumentNumber() * (1.0 / docSize));
         assertEquals(tfIdfMapForSpecificDocument, tfIdf.getTfIdfForSpecificDocumentWithContent(doc));
 
-        Map<String, Double> augmentedTfIdf = tfIdf.getTfIdfForAllDocuments();
+        Map<String, Double> augmentedTfIdf = new HashMap<>(tfIdf.getTfIdfForAllDocuments());
         augmentedTfIdf.put("play", 0.0);
         augmentedTfIdf.put("football", 0.0);
         augmentedTfIdf.put("too", 0.0);
         assertEquals(augmentedTfIdf, tfIdf.getAugmentedTfIdfForAllDocuments(doc));
+        assertEquals(tfIdf.getAugmentedTfIdfForAllDocuments(doc).size(), tfIdf.getTfIdfForSpecificDocumentWithContent(doc).size());
+        String nextDoc = "you and i need to play football for spartak";
+        assertEquals(tfIdf.getAugmentedTfIdfForAllDocuments(nextDoc).size(), tfIdf.getTfIdfForSpecificDocumentWithContent(nextDoc).size());
+
     }
 }
