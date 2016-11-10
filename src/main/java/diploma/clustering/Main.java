@@ -28,12 +28,12 @@ public class Main {
                 line = br.readLine();
                 if (line != null && !line.equals("")) {
                     String[] lines = line.split("=");
-                    Map<String, Double> tf = tfIdf.tfIdfForSpecificDocument(lines[0]);//, lines[1]);
+                    Map<String, Double> tf = tfIdf.getTfIdfForSpecificDocument(lines[0]);//, lines[1]);
                     tfTable.put(lines[1], tf);
                 }
             } while (line != null);
             List<String> words = new ArrayList<>();
-            for (Map.Entry<String, Integer> entry: tfIdf.getNumberOfDocumentsWithTerm().entrySet()) {
+            for (Map.Entry<String, Integer> entry: tfIdf.getNumberOfDocumentsWithTermMap().entrySet()) {
                 if (entry.getValue() > 5)
                     words.add(entry.getKey());
             }
@@ -43,7 +43,7 @@ public class Main {
             ex.printStackTrace();
         }
 
-        Map<String, Integer> sortedMap = MapUtil.sortByValue(tfIdf.getNumberOfDocumentsWithTerm());
+        Map<String, Integer> sortedMap = MapUtil.sortByValue(tfIdf.getNumberOfDocumentsWithTermMap());
 //        Map<String, Double> sortedMapTwo = MapUtil.sortByValue(tf_idf.idfMap);
         String[] significantWordsVector = significantWordsVector(sortedMap.keySet());
         Map<String, Double[]> vectorModels = new HashMap<>();
@@ -57,12 +57,12 @@ public class Main {
                     vectorModel[j] = tf.get(significantWordsVector[j]) * tfIdf.getTermIdf(significantWordsVector[j]);
                 else vectorModel[j] = 0.0;
             }
-//            for (Map.Entry<String, Double> tfIdfForSpecificDocument: tweetAndItsTf.getValue().entrySet()) {
-//                while (!tfIdfForSpecificDocument.getKey().equals(significantWordsVector[i])) {
+//            for (Map.Entry<String, Double> getTfIdfForSpecificDocument: tweetAndItsTf.getValue().entrySet()) {
+//                while (!getTfIdfForSpecificDocument.getKey().equals(significantWordsVector[i])) {
 //                    vectorModel[i] = 0.0;
 //                    i++;
 //                }
-//                vectorModel[i] = tfIdfForSpecificDocument.getValue() * tf_idf.idfMap.get(tfIdfForSpecificDocument.getKey());
+//                vectorModel[i] = getTfIdfForSpecificDocument.getValue() * tf_idf.idfMap.get(getTfIdfForSpecificDocument.getKey());
 //                i++;
 //            }
             vectorModels.put(tweet, vectorModel);

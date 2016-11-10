@@ -96,12 +96,68 @@ public class TfIdfTest {
         tfIdfForDoc4.put("and", Math.log10(4.0 / 1.0) * (1.0 / doc4Size));
         assertEquals(4, tfIdf.getDocumentNumber());
         assertEquals(termFrequencyMap, tfIdf.getTermFrequencyMap());
-        assertEquals(numberOfDocumentsWithTerm, tfIdf.getNumberOfDocumentsWithTerm());
+        assertEquals(numberOfDocumentsWithTerm, tfIdf.getNumberOfDocumentsWithTermMap());
         assertEquals(termDocumentCoOccurrenceMatrix, tfIdf.getTermDocumentCoOccurrenceMatrix());
         assertEquals((Double) Math.log10(4.0 / 2.0), tfIdf.getTermIdf("you"));
         assertEquals((Double) Math.log10(4.0 / 3.0), tfIdf.getTermIdf("to"));
-        assertEquals(tfIdfForAllDocuments, tfIdf.tfIdfForAllDocuments());
-        assertEquals(tfIdfForDoc1, tfIdf.tfIdfForSpecificDocument("doc1"));
-        assertEquals(tfIdfForDoc4, tfIdf.tfIdfForSpecificDocument("doc4"));
+        assertEquals(tfIdfForAllDocuments, tfIdf.getTfIdfForAllDocuments());
+        assertEquals(tfIdfForDoc1, tfIdf.getTfIdfForSpecificDocument("doc1"));
+        assertEquals(tfIdfForDoc4, tfIdf.getTfIdfForSpecificDocument("doc4"));
+
+        // test global idf
+        TfIdf tfIdf1 = new TfIdf();
+        tfIdf1.updateForNewDocument("doc5", "i have to go");
+        tfIdf1.updateForNewDocument("doc6", "you have to eat");
+        tfIdf1.updateForNewDocument("doc7", "we all need to walk");
+        tfIdf1.updateForNewDocument("doc8", "i need you and you");
+        Map<String, Integer> globalNumberOfDocumentsWithTerm = new HashMap<>();
+        globalNumberOfDocumentsWithTerm.put("to", 6);
+        globalNumberOfDocumentsWithTerm.put("you", 4);
+        globalNumberOfDocumentsWithTerm.put("i", 4);
+        globalNumberOfDocumentsWithTerm.put("have", 4);
+        globalNumberOfDocumentsWithTerm.put("need", 4);
+        globalNumberOfDocumentsWithTerm.put("go", 2);
+        globalNumberOfDocumentsWithTerm.put("all", 2);
+        globalNumberOfDocumentsWithTerm.put("walk", 2);
+        globalNumberOfDocumentsWithTerm.put("eat", 2);
+        globalNumberOfDocumentsWithTerm.put("we", 2);
+        globalNumberOfDocumentsWithTerm.put("and", 2);
+        assertEquals(8, TfIdf.getGlobalDocumentNumber());
+        assertEquals(globalNumberOfDocumentsWithTerm, TfIdf.getGlobalNumberOfDocumentsWithTermMap());
+        assertEquals(Math.log10((double) TfIdf.getGlobalDocumentNumber() / (double) TfIdf.getGlobalNumberOfDocumentsWithTermMap().get("you")),
+                TfIdf.getGlobalTermIdf("you"), 0.0000000000000000000001);
+        assertEquals(Math.log10((double) TfIdf.getGlobalDocumentNumber() / (double) TfIdf.getGlobalNumberOfDocumentsWithTermMap().get("to")),
+                TfIdf.getGlobalTermIdf("to"), 0.0000000000000000000001);
+
+        // test tf-idf for document with specific content
+//        tfIdf.updateForNewDocument("doc9", "i play football");
+//        tfIdf.updateForNewDocument("doc10", "this is football");
+//        tfIdf.updateForNewDocument("doc11", "football is the best game");
+//        tfIdf.updateForNewDocument("doc12", "i am a football player");
+//        tfIdf.updateForNewDocument("doc12", "i need more tweets about football");
+        Map<String, Double> tfIdfMapForSpecificDocument = new HashMap<>();
+        String doc = "you and i need to play football too";
+        int docSize = 8;
+        tfIdfMapForSpecificDocument.put("to", TfIdf.getGlobalTermIdf("to") * (1.0 / docSize));
+        tfIdfMapForSpecificDocument.put("you", TfIdf.getGlobalTermIdf("you") * (1.0 / docSize));
+        tfIdfMapForSpecificDocument.put("i", TfIdf.getGlobalTermIdf("i") * (1.0 / docSize));
+        tfIdfMapForSpecificDocument.put("need", TfIdf.getGlobalTermIdf("need") * (1.0 / docSize));
+        tfIdfMapForSpecificDocument.put("and", TfIdf.getGlobalTermIdf("and") * (1.0 / docSize));
+        tfIdfMapForSpecificDocument.put("have", 0.0);
+        tfIdfMapForSpecificDocument.put("go", 0.0);
+        tfIdfMapForSpecificDocument.put("all", 0.0);
+        tfIdfMapForSpecificDocument.put("walk", 0.0);
+        tfIdfMapForSpecificDocument.put("eat", 0.0);
+        tfIdfMapForSpecificDocument.put("we", 0.0);
+        tfIdfMapForSpecificDocument.put("play", TfIdf.getGlobalDocumentNumber() * (1.0 / docSize));
+        tfIdfMapForSpecificDocument.put("football", TfIdf.getGlobalDocumentNumber() * (1.0 / docSize));
+        tfIdfMapForSpecificDocument.put("too", TfIdf.getGlobalDocumentNumber() * (1.0 / docSize));
+        assertEquals(tfIdfMapForSpecificDocument, tfIdf.getTfIdfForSpecificDocumentWithContent(doc));
+
+        Map<String, Double> augmentedTfIdf = tfIdf.getTfIdfForAllDocuments();
+        augmentedTfIdf.put("play", 0.0);
+        augmentedTfIdf.put("football", 0.0);
+        augmentedTfIdf.put("too", 0.0);
+        assertEquals(augmentedTfIdf, tfIdf.getAugmentedTfIdfForAllDocuments(doc));
     }
 }
