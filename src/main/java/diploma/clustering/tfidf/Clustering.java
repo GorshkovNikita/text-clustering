@@ -48,14 +48,14 @@ public class Clustering {
 
     public static Cluster findNearestCluster(String normalizedText) {
         Cluster nearestCluster = null;
-        Double minDist = Double.MAX_VALUE;
+        Double maxSimilarity = 0.0;
         for (Cluster cluster: clusters) {
-            Double dist = CosineSimilarity.cosineSimilarity(
+            Double similarity = CosineSimilarity.cosineSimilarity(
                     cluster.getTfIdf().getAugmentedTfIdfForAllDocuments(normalizedText),
                     cluster.getTfIdf().getTfIdfForSpecificDocumentWithContent(normalizedText));
-            if (dist > 0.005 && dist < minDist) {
+            if (similarity > 0.003 && similarity > maxSimilarity) {
                 nearestCluster = cluster;
-                minDist = dist;
+                maxSimilarity = similarity;
             }
         }
         return nearestCluster;
@@ -83,6 +83,12 @@ public class Clustering {
                     else nearestCluster.assignStatus(status);
                 }
             } while (line1 != null);
+            List<Cluster> bigClusters = new ArrayList<>();
+            for (Cluster cluster: clusters) {
+                if (cluster.getStatuses().size() >= 5) {
+                    bigClusters.add(cluster);
+                }
+            }
             br.close();
         }
         catch (IOException | IllegalArgumentException ex) {
