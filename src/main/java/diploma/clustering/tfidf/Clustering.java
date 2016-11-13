@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Никита
@@ -50,10 +51,10 @@ public class Clustering {
         Cluster nearestCluster = null;
         Double maxSimilarity = 0.0;
         for (Cluster cluster: clusters) {
-            Double similarity = CosineSimilarity.cosineSimilarity(
-                    cluster.getTfIdf().getAugmentedTfIdfForAllDocuments(normalizedText),
-                    cluster.getTfIdf().getTfIdfForSpecificDocumentWithContent(normalizedText));
-            if (similarity > 0.003 && similarity > maxSimilarity) {
+            Map<String, Double> tfIdfForAllDocuments = cluster.getTfIdf().getTfIdfForAllDocuments();
+            Map<String, Double> tfIdfOfDocumentIntersection = cluster.getTfIdf().getTfIdfOfDocumentIntersection(normalizedText);
+            Double similarity = CosineSimilarity.cosineSimilarity(tfIdfForAllDocuments, tfIdfOfDocumentIntersection);
+            if (similarity > 0.1 && similarity > maxSimilarity) {
                 nearestCluster = cluster;
                 maxSimilarity = similarity;
             }
@@ -74,13 +75,14 @@ public class Clustering {
                     }
                     catch (TwitterException ignored) {}
                     String normalizedText = normalizer.normalizeToString(status.getText());
-                    Cluster nearestCluster = findNearestCluster(normalizedText);
-                    if (nearestCluster == null) {
-                        Cluster newCluster = new Cluster();
-                        newCluster.assignStatus(status);
-                        clusters.add(newCluster);
+                    if (normalizedText.split(" ").length >= 4) {
+                        Cluster nearestCluster = findNearestCluster(normalizedText);
+                        if (nearestCluster == null) {
+                            Cluster newCluster = new Cluster();
+                            newCluster.assignStatus(status);
+                            clusters.add(newCluster);
+                        } else nearestCluster.assignStatus(status);
                     }
-                    else nearestCluster.assignStatus(status);
                 }
             } while (line1 != null);
             List<Cluster> bigClusters = new ArrayList<>();

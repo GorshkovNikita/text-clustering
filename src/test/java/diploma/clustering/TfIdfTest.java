@@ -164,5 +164,12 @@ public class TfIdfTest {
         String nextDoc = "you and i need to play football for spartak";
         assertEquals(tfIdf.getAugmentedTfIdfForAllDocuments(nextDoc).size(), tfIdf.getTfIdfForSpecificDocumentWithContent(nextDoc).size());
 
+        Map<String, Double> tfIdfOfDocumentIntersection = new HashMap<>();
+        tfIdfOfDocumentIntersection.put("you", ((double)1 / (double)8) * TfIdf.getGlobalTermIdf("you"));
+        tfIdfOfDocumentIntersection.put("i", ((double)1 / (double)8) * TfIdf.getGlobalTermIdf("i"));
+        tfIdfOfDocumentIntersection.put("need", ((double)1 / (double)8) * TfIdf.getGlobalTermIdf("need"));
+        tfIdfOfDocumentIntersection.put("and", ((double)1 / (double)8) * TfIdf.getGlobalTermIdf("and"));
+        tfIdfOfDocumentIntersection.put("to", ((double)1 / (double)8) * TfIdf.getGlobalTermIdf("to"));
+        assertEquals(tfIdfOfDocumentIntersection, tfIdf.getTfIdfOfDocumentIntersection(doc));
     }
 }

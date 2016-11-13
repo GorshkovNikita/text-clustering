@@ -64,8 +64,7 @@ public class TextNormalizer {
         for(CoreMap token: tokens) {
             String lemma = token.get(CoreAnnotations.LemmaAnnotation.class);
             String pos = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);
-            // TODO: переделать проверку на регулярное выражение
-            if (!stopWordList.contains(lemma) && !lemma.startsWith("https://") && (lemma.length() >= 4) && isVerbOrNoun(pos) && !lemma.equals(""))
+            if (!stopWordList.contains(lemma) && !lemma.startsWith("https://") && (lemma.length() >= 4) && isVerbOrNoun(pos) && !lemma.equals("") && !lemma.startsWith("@"))
                 resultString += lemma.toLowerCase() + " ";
         }
 

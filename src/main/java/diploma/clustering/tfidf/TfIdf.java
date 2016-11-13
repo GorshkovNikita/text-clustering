@@ -126,7 +126,9 @@ public class TfIdf {
     }
 
     /**
-     * Получение вектора tf-idf для нового пришедшего твита в рамках текущего кластера
+     * Получение вектора tf-idf для нового пришедшего твита в рамках текущего кластера.
+     * В этой карте будут все ключи, которые есть в экземпляре {@link diploma.clustering.tfidf.TfIdf}
+     * и в пришедшем твите.
      * @param normalizedText - нормализованный текст твита
      * @return - tf-idf твита
      */
@@ -148,6 +150,30 @@ public class TfIdf {
                 double tf = (double) docTermFrequencyMap.get(term) / (double) termsNumber;
                 // умножаем на количество документов, тк этого терма нет в карте idf => он не встрачался еще ни разу
                 tfIdfMap.put(term, tf * globalDocumentNumber);
+            }
+        }
+        return tfIdfMap;
+    }
+
+    /**
+     * Получение вектора tf-idf для нового пришедшего твита, состоящий только из термов,
+     * встречающихся в кластере. Например, пришел твит с текстом: "i like to eat".
+     * В текущем экземпляре {@link diploma.clustering.tfidf.TfIdf} собрались термы:
+     * i, go, to, like, dog. В этом случае вернется карта tf-idf с ключами i, to, like,
+     * т.к. только эти слова встречаются и в твите и в экземпляре {@link diploma.clustering.tfidf.TfIdf}
+     * @param normalizedText - нормализованный текст твита
+     * @return - tf-idf твита
+     */
+    public Map<String, Double> getTfIdfOfDocumentIntersection(String normalizedText) {
+        String[] terms = normalizedText.split(" ");
+        int termsNumber = terms.length;
+        Map<String, Integer> docTermFrequencyMap = new HashMap<>();
+        for (String term: terms) updateFrequencyMapForTerm(docTermFrequencyMap, term);
+        Map<String, Double> tfIdfMap = new HashMap<>();
+        for (Map.Entry<String, Integer> termAndItsFrequency: this.termFrequencyMap.entrySet()) {
+            if (docTermFrequencyMap.containsKey(termAndItsFrequency.getKey())) {
+                double tf = (double) docTermFrequencyMap.get(termAndItsFrequency.getKey()) / (double) termsNumber;
+                tfIdfMap.put(termAndItsFrequency.getKey(), tf * getGlobalTermIdf(termAndItsFrequency.getKey()));
             }
         }
         return tfIdfMap;
