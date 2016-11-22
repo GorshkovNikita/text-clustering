@@ -12,7 +12,7 @@ public class TextNormalizerTest {
 
     @Before
     public void setUp() {
-        normalizer = new TextNormalizer();
+        normalizer = TextNormalizer.getInstance();
     }
 
     @Test

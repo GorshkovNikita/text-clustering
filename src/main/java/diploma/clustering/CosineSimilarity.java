@@ -78,8 +78,10 @@ public class CosineSimilarity {
 
     public static void main(String[] args) {
         TfIdf tfIdf = new TfIdf();
-        tfIdf.updateForNewDocument("doc1", "this is sparta");
-        tfIdf.updateForNewDocument("doc2", "this is spartak");
+        tfIdf.updateForNewDocument("doc1", "this is spartak moscow");
+        tfIdf.updateForNewDocument("doc1", "that is spartak moscow");
+        tfIdf.updateForNewDocument("doc2", "this is sparta");
+        tfIdf.updateForNewDocument("doc2", "that was valencia");
         for (int i = 0; i < 100; i++) {
             String doc;
             if (i % 10 == 0)
@@ -92,6 +94,5 @@ public class CosineSimilarity {
             tfIdf.updateForNewDocument("doc" + (i + 3), doc);
             System.out.println(cos);
         }
-
     }
 }

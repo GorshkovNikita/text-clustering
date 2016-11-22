@@ -22,30 +22,6 @@ import java.util.Map;
  */
 public class Clustering {
     private static List<Cluster> clusters = new ArrayList<>();
-    private static TextNormalizer normalizer = new TextNormalizer();
-
-    private static class Cluster {
-        private TfIdf tfIdf;
-        private List<Status> statuses;
-
-        public Cluster() {
-            tfIdf = new TfIdf();
-            statuses = new ArrayList<>();
-        }
-
-        public void assignStatus(Status status) {
-            statuses.add(status);
-            tfIdf.updateForNewDocument(Long.toString(status.getId()), normalizer.normalizeToString(status.getText()));
-        }
-
-        public List<Status> getStatuses() {
-            return statuses;
-        }
-
-        public TfIdf getTfIdf() {
-            return tfIdf;
-        }
-    }
 
     public static Cluster findNearestCluster(String normalizedText) {
         Cluster nearestCluster = null;
@@ -64,17 +40,17 @@ public class Clustering {
 
     public static void process(Path filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath.toString()))) {
-            String line1 = null;
+            String line = null;
             int i = 0;
             do {
-                line1 = br.readLine();
-                if (line1 != null && !line1.equals("")) {
+                line = br.readLine();
+                if (line != null && !line.equals("")) {
                     Status status = null;
                     try {
-                        status = TwitterObjectFactory.createStatus(line1);
+                        status = TwitterObjectFactory.createStatus(line);
                     }
                     catch (TwitterException ignored) {}
-                    String normalizedText = normalizer.normalizeToString(status.getText());
+                    String normalizedText = TextNormalizer.getInstance().normalizeToString(status.getText());
                     if (normalizedText.split(" ").length >= 4) {
                         Cluster nearestCluster = findNearestCluster(normalizedText);
                         if (nearestCluster == null) {
@@ -84,13 +60,7 @@ public class Clustering {
                         } else nearestCluster.assignStatus(status);
                     }
                 }
-            } while (line1 != null);
-            List<Cluster> bigClusters = new ArrayList<>();
-            for (Cluster cluster: clusters) {
-                if (cluster.getStatuses().size() >= 5) {
-                    bigClusters.add(cluster);
-                }
-            }
+            } while (line != null);
             br.close();
         }
         catch (IOException | IllegalArgumentException ex) {

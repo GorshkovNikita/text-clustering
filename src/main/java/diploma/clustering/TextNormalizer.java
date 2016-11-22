@@ -43,8 +43,15 @@ public class TextNormalizer {
 
 
     private StanfordCoreNLP pipeline;
+    private static TextNormalizer textNormalizer;
 
-    public TextNormalizer() {
+    public static TextNormalizer getInstance() {
+        if (textNormalizer == null)
+            textNormalizer = new TextNormalizer();
+        return textNormalizer;
+    }
+
+    private TextNormalizer() {
         Properties props = new Properties();
         props.setProperty("annotators", "tokenize, ssplit, pos, lemma");
         pipeline = new StanfordCoreNLP(props);
