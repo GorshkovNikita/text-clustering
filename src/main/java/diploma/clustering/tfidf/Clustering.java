@@ -11,6 +11,7 @@ import twitter4j.TwitterObjectFactory;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.Map;
 /**
  * @author Никита
  */
-public class Clustering {
+public class Clustering implements Serializable {
     private List<Cluster> clusters = new ArrayList<>();
 
     public Cluster findNearestCluster(String normalizedText) {
@@ -38,27 +39,33 @@ public class Clustering {
         return nearestCluster;
     }
 
+    /**
+     * TODO: Подумать над тем, что должно сюда приходить
+     * @param status - следующий статус
+     */
+    public void processNext(Status status) {
+        String normalizedText = TextNormalizer.getInstance().normalizeToString(status.getText());
+        if (normalizedText.split(" ").length >= 4) {
+            Cluster nearestCluster = findNearestCluster(normalizedText);
+            if (nearestCluster == null) {
+                Cluster newCluster = new Cluster();
+                newCluster.assignStatus(status);
+                clusters.add(newCluster);
+            } else nearestCluster.assignStatus(status);
+        }
+    }
+
     public void process(Path filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath.toString()))) {
             String line = null;
-            int i = 0;
             do {
                 line = br.readLine();
                 if (line != null && !line.equals("")) {
                     Status status = null;
                     try {
                         status = TwitterObjectFactory.createStatus(line);
-                    }
-                    catch (TwitterException ignored) {}
-                    String normalizedText = TextNormalizer.getInstance().normalizeToString(status.getText());
-                    if (normalizedText.split(" ").length >= 4) {
-                        Cluster nearestCluster = findNearestCluster(normalizedText);
-                        if (nearestCluster == null) {
-                            Cluster newCluster = new Cluster();
-                            newCluster.assignStatus(status);
-                            clusters.add(newCluster);
-                        } else nearestCluster.assignStatus(status);
-                    }
+                        processNext(status);
+                    } catch (TwitterException ignored) {}
                 }
             } while (line != null);
             br.close();
@@ -66,6 +73,10 @@ public class Clustering {
         catch (IOException | IllegalArgumentException ex) {
             ex.printStackTrace();
         }
+    }
+
+    public List<Cluster> getClusters() {
+        return clusters;
     }
 
     public static void main(String[] args) {

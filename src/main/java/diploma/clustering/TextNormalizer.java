@@ -57,7 +57,7 @@ public class TextNormalizer {
         pipeline = new StanfordCoreNLP(props);
     }
 
-    public Annotation normalize(String text) {
+    private Annotation normalize(String text) {
         Annotation document = new Annotation(text);
         pipeline.annotate(document);
         return document;
