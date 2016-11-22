@@ -21,9 +21,9 @@ import java.util.Map;
  * @author Никита
  */
 public class Clustering {
-    private static List<Cluster> clusters = new ArrayList<>();
+    private List<Cluster> clusters = new ArrayList<>();
 
-    public static Cluster findNearestCluster(String normalizedText) {
+    public Cluster findNearestCluster(String normalizedText) {
         Cluster nearestCluster = null;
         Double maxSimilarity = 0.0;
         for (Cluster cluster: clusters) {
@@ -38,7 +38,7 @@ public class Clustering {
         return nearestCluster;
     }
 
-    public static void process(Path filePath) {
+    public void process(Path filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath.toString()))) {
             String line = null;
             int i = 0;
@@ -69,6 +69,8 @@ public class Clustering {
     }
 
     public static void main(String[] args) {
-        process(Paths.get(Clustering.class.getClassLoader().getResource("2016-10-19-champions-league-first-1000.txt").getFile().substring(1)));
+        Clustering clustering = new Clustering();
+        clustering.process(Paths.get(Clustering.class.getClassLoader().getResource("2016-10-19-champions-league-first-1000.txt").getFile().substring(1)));
+        System.out.println("Count of clusters = " + clustering.clusters.size());
     }
 }
