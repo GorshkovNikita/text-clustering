@@ -1,5 +1,6 @@
 package diploma.clustering.neuralgas;
 
+import diploma.clustering.Point;
 import diploma.clustering.tfidf.TfIdf;
 import diploma.clustering.VectorOperations;
 

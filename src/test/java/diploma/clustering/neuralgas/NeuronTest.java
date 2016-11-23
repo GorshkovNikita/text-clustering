@@ -1,5 +1,6 @@
 package diploma.clustering.neuralgas;
 
+import diploma.clustering.Point;
 import org.junit.Before;
 import org.junit.Test;
 

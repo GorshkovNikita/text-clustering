@@ -1,33 +1,30 @@
-package diploma.clustering.tfidf;
+package diploma.clustering.clusters;
 
 import diploma.clustering.CosineSimilarity;
-import diploma.clustering.MapUtil;
 import diploma.clustering.TextNormalizer;
+import diploma.clustering.dbscan.ClustersDbscan;
+import diploma.clustering.dbscan.points.DbscanStatusesCluster;
 import twitter4j.Status;
-import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterObjectFactory;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Serializable;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
  * @author Никита
  */
-public class Clustering implements Serializable {
-    private List<Cluster> clusters = new ArrayList<>();
-
-    public Cluster findNearestCluster(String normalizedText) {
-        Cluster nearestCluster = null;
+public class StatusesClustering extends Clustering<DbscanStatusesCluster, Status> {
+    @Override
+    public DbscanStatusesCluster findNearestCluster(Status point) {
+        String normalizedText = TextNormalizer.getInstance().normalizeToString(point.getText());
+        DbscanStatusesCluster nearestCluster = null;
         Double maxSimilarity = 0.0;
-        for (Cluster cluster: clusters) {
+        for (DbscanStatusesCluster cluster: getClusters()) {
             Map<String, Double> tfIdfForAllDocuments = cluster.getTfIdf().getTfIdfForAllDocuments();
             Map<String, Double> tfIdfOfDocumentIntersection = cluster.getTfIdf().getTfIdfOfDocumentIntersection(normalizedText);
             Double similarity = CosineSimilarity.cosineSimilarity(tfIdfForAllDocuments, tfIdfOfDocumentIntersection);
@@ -39,20 +36,9 @@ public class Clustering implements Serializable {
         return nearestCluster;
     }
 
-    /**
-     * TODO: Подумать над тем, что должно сюда приходить
-     * @param status - следующий статус
-     */
-    public void processNext(Status status) {
-        String normalizedText = TextNormalizer.getInstance().normalizeToString(status.getText());
-        if (normalizedText.split(" ").length >= 4) {
-            Cluster nearestCluster = findNearestCluster(normalizedText);
-            if (nearestCluster == null) {
-                Cluster newCluster = new Cluster();
-                newCluster.assignStatus(status);
-                clusters.add(newCluster);
-            } else nearestCluster.assignStatus(status);
-        }
+    @Override
+    public DbscanStatusesCluster createNewCluster() {
+        return new DbscanStatusesCluster();
     }
 
     public void process(Path filePath) {
@@ -75,12 +61,34 @@ public class Clustering implements Serializable {
         }
     }
 
-    public List<Cluster> getClusters() {
-        return clusters;
+    public void processWithDbscan(Path filePath) {
+        ClustersDbscan clustersDbscan = new ClustersDbscan(3, 0.1);
+        int timestamp = 0;
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath.toString()))) {
+            String line = null;
+            do {
+                line = br.readLine();
+                if (line != null && !line.equals("")) {
+                    Status status = null;
+                    try {
+                        status = TwitterObjectFactory.createStatus(line);
+                        processNext(status);
+                        timestamp++;
+                    } catch (TwitterException ignored) {}
+                }
+                if (timestamp % 1000 == 0) {
+                    clustersDbscan.run(getClusters());
+                }
+            } while (line != null);
+            br.close();
+        }
+        catch (IOException | IllegalArgumentException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
-        Clustering clustering = new Clustering();
+        StatusesClustering clustering = new StatusesClustering();
         clustering.process(Paths.get(Clustering.class.getClassLoader().getResource("2016-10-19-champions-league-first-1000.txt").getFile().substring(1)));
         System.out.println("Count of clusters = " + clustering.clusters.size());
     }

@@ -3,10 +3,8 @@ package diploma.clustering;
 import cc.mallet.pipe.*;
 import cc.mallet.pipe.iterator.CsvIterator;
 import cc.mallet.topics.ParallelTopicModel;
-import cc.mallet.topics.TopicInferencer;
 import cc.mallet.types.*;
 import diploma.clustering.neuralgas.NeuralGas;
-import diploma.clustering.neuralgas.Point;
 
 import java.io.*;
 import java.util.*;

@@ -2,6 +2,7 @@ package diploma.clustering.neuralgas;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import diploma.clustering.Point;
 import diploma.clustering.VectorOperations;
 import diploma.clustering.neuralgas.exceptions.NeuralGasIsNotInitialized;
 import diploma.clustering.neuralgas.exceptions.NeuronAlreadyExistsException;

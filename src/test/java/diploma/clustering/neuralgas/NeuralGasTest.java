@@ -1,6 +1,6 @@
 package diploma.clustering.neuralgas;
 
-import diploma.clustering.neuralgas.exceptions.NeuronAlreadyExistsException;
+import diploma.clustering.Point;
 import diploma.clustering.neuralgas.exceptions.NeuronNotExistsException;
 import org.junit.Before;
 import org.junit.Test;

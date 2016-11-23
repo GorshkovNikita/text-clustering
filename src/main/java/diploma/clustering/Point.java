@@ -1,4 +1,4 @@
-package diploma.clustering.neuralgas;
+package diploma.clustering;
 
 import java.util.Arrays;
 

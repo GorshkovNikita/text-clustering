@@ -1,6 +1,6 @@
 package diploma.clustering.endpoint;
 
-import diploma.clustering.neuralgas.Point;
+import diploma.clustering.Point;
 
 import java.io.Serializable;
 import java.util.List;

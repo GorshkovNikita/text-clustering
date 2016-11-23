@@ -93,7 +93,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>diploma.clustering.tfidf.Clustering</mainClass>
+                            <mainClass>diploma.clustering.clusters.Clustering</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

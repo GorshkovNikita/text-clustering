@@ -1,7 +1,6 @@
 package diploma.clustering;
 
 import diploma.clustering.neuralgas.NeuralGas;
-import diploma.clustering.neuralgas.Point;
 import diploma.clustering.tfidf.TfIdf;
 
 import java.io.BufferedReader;
