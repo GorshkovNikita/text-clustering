@@ -18,7 +18,8 @@ public class DbscanStatusesCluster extends StatusesCluster implements DbscanPoin
         List<DbscanPoint> neighbours = new ArrayList<>();
         for (DbscanPoint cluster: clusters) {
             if (cluster != this)
-                if (CosineSimilarity.cosineSimilarity(this.getTfIdf().getTfIdfForAllDocuments(), ((DbscanStatusesCluster) cluster).getTfIdf().getTfIdfForAllDocuments()) >= eps)
+                if (CosineSimilarity.cosineSimilarity(this.getTfIdf().getTfIdfForAllDocuments(),
+                        ((DbscanStatusesCluster) cluster).getTfIdf().getTfIdfForAllDocuments()) >= eps)
                     neighbours.add(cluster);
         }
         return neighbours;
