@@ -11,9 +11,15 @@ import java.util.List;
  */
 public abstract class Cluster<T> {
     private List<T> assignedPoints;
+    private int clusterId;
 
     public Cluster() {
+
+    }
+
+    public Cluster(int clusterId) {
         assignedPoints = new ArrayList<>();
+        this.clusterId = clusterId;
     }
 
     public Cluster(List<T> points) {
@@ -26,5 +32,9 @@ public abstract class Cluster<T> {
 
     public List<T> getAssignedPoints() {
         return assignedPoints;
+    }
+
+    public int getClusterId() {
+        return clusterId;
     }
 }

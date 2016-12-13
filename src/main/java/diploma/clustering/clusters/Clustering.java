@@ -19,6 +19,14 @@ public abstract class Clustering<C extends Cluster<T>, T> implements Serializabl
         return clusters;
     }
 
+    public C findClusterById(int clusterId) {
+        for(C cluster: clusters) {
+            if (cluster.getClusterId() == clusterId)
+                return cluster;
+        }
+        return null;
+    }
+
     /**
      * Обработка следующей точки. Поиск ближайшего кластера и присоединение к нему точки.
      * Если такой кластер не найден, то создание нового

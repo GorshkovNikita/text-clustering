@@ -18,8 +18,8 @@ public class PointsDbscan extends Dbscan<PointsClustering, PointsCluster, Point>
     }
 
     @Override
-    public PointsCluster addCluster() {
-        return new PointsCluster();
+    public PointsCluster addCluster(int clusterId) {
+        return new PointsCluster(clusterId);
     }
 
     public static void main(String[] args) {
@@ -42,5 +42,8 @@ public class PointsDbscan extends Dbscan<PointsClustering, PointsCluster, Point>
         points.add(new DbscanSimplePoint(new Double[] {-3.0, 6.0}));
         points.add(new DbscanSimplePoint(new Double[] {3.0, 2.0}));
         pointsDbscan.run(points);
+        List<DbscanSimplePoint> newPoints = new ArrayList<>();
+        newPoints.add(new DbscanSimplePoint(new Double[] {3.0, 1.0}));
+        pointsDbscan.run(newPoints);
     }
 }

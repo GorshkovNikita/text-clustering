@@ -9,11 +9,14 @@ import java.util.List;
  * @author Никита
  */
 public class DbscanClustersCluster extends ClustersCluster implements DbscanPoint {
-    private boolean isNoise = false;
-    private boolean isVisited = false;
+    private int clusterId = DbscanPoint.UNVISITED;
 
     public DbscanClustersCluster(List<DbscanPoint> points) {
-        super((List<StatusesCluster>)(List<?>)points);
+        super((List<DbscanStatusesCluster>)(List<?>)points);
+    }
+
+    public DbscanClustersCluster(int clusterId) {
+        super(clusterId);
     }
 
     @Override
@@ -22,22 +25,33 @@ public class DbscanClustersCluster extends ClustersCluster implements DbscanPoin
     }
 
     @Override
-    public void setNoise(boolean isNoise) {
-        this.isNoise = isNoise;
+    public void setNoise() {
+        this.clusterId = NOISE;
     }
 
     @Override
     public boolean isNoise() {
-        return isNoise;
+        return clusterId == NOISE;
     }
 
-    @Override
-    public void setVisited(boolean isVisited) {
-        this.isVisited = isVisited;
-    }
+//    @Override
+//    public void setVisited(boolean isVisited) {
+//
+//        this.clusterId = isVisited;
+//    }
 
     @Override
     public boolean isVisited() {
-        return isVisited;
+        return clusterId != UNVISITED;
+    }
+
+    @Override
+    public int getClusterId() {
+        return clusterId;
+    }
+
+    @Override
+    public void setClusterId(int clusterId) {
+        this.clusterId = clusterId;
     }
 }

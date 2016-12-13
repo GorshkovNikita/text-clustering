@@ -14,11 +14,14 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Никита
  */
 public class StatusesClustering extends Clustering<DbscanStatusesCluster, Status> {
+    private static final int MIN_POINTS = 100;
+
     @Override
     public DbscanStatusesCluster findNearestCluster(Status point) {
         String normalizedText = TextNormalizer.getInstance().normalizeToString(point.getText());
@@ -76,8 +79,20 @@ public class StatusesClustering extends Clustering<DbscanStatusesCluster, Status
                         timestamp++;
                     } catch (TwitterException ignored) {}
                 }
-                if (timestamp % 1000 == 0) {
-                    clustersDbscan.run(getClusters());
+                if (timestamp % 10000 == 0) {
+                    // TODO: после отправления точек в DBSCAN желательно их удалять, тк
+                    // TODO: этот метод будет выполнятся на каждом болте, а следовательно,
+                    // TODO: если сохранять все точки, то это будет занимать много места
+                    // TODO: это альтернатива варианту с id кластеров
+
+                    // TODO: для использования в Storm видимо нужно копировать коллекцию, потом очищать ее в болте,
+                    // TODO: а копию отправлять в следующий spout
+                    clustersDbscan.run(getClusters()
+                            .stream()
+                            .filter((cluster) -> cluster.getAssignedPoints().size() > MIN_POINTS)
+                            // Если дополнительно для фильтра использовать: && !cluster.isVisited()), то
+                            // тогда нельзя будет найти всех соседей
+                            .collect(Collectors.toList()));
                 }
             } while (line != null);
             br.close();

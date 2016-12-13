@@ -46,7 +46,7 @@ public class TfIdf {
      */
     private Table<String, String, Integer> termDocumentCoOccurrenceMatrix = HashBasedTable.create();
 //    private TextNormalizer normalizer = new TextNormalizer();
-    Map<String, Double> tfIdfMapForAllDocuments = new HashMap<>();
+    private Map<String, Double> tfIdfMapForAllDocuments = new HashMap<>();
     /**
      * Флаг, показывающий был ли добавлен новый документ, если нет, то tfIdfMapForAllDocuments
      * можно не пересчитывать. Если же новый документ был добавлен, то необходимо посчитать все заново

@@ -10,8 +10,7 @@ import java.util.List;
  * @author Никита
  */
 public class DbscanSimplePoint extends Point implements DbscanPoint {
-    private boolean isNoise;
-    private boolean isVisited;
+    private int clusterId;
 
     public DbscanSimplePoint(Double[] coordinatesVector) {
         super(coordinatesVector);
@@ -29,22 +28,33 @@ public class DbscanSimplePoint extends Point implements DbscanPoint {
     }
 
     @Override
-    public void setNoise(boolean isNoise) {
-        this.isNoise = isNoise;
+    public void setNoise() {
+        this.clusterId = NOISE;
     }
 
     @Override
     public boolean isNoise() {
-        return isNoise;
+        return clusterId == NOISE;
     }
 
-    @Override
-    public void setVisited(boolean isVisited) {
-        this.isVisited = isVisited;
-    }
+//    @Override
+//    public void setVisited(boolean isVisited) {
+//
+//        this.clusterId = isVisited;
+//    }
 
     @Override
     public boolean isVisited() {
-        return isVisited;
+        return clusterId != UNVISITED;
+    }
+
+    @Override
+    public int getClusterId() {
+        return clusterId;
+    }
+
+    @Override
+    public void setClusterId(int clusterId) {
+        this.clusterId = clusterId;
     }
 }

@@ -8,7 +8,8 @@ import java.util.List;
  * @author Никита
  */
 public class PointsCluster extends Cluster<Point> {
-    public PointsCluster() {
+    public PointsCluster(int clusterId) {
+        super(clusterId);
     }
 
     public PointsCluster(List<Point> points) {
