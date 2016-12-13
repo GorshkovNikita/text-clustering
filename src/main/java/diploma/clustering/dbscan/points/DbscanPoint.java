@@ -25,9 +25,24 @@ public interface DbscanPoint {
      */
     List<DbscanPoint> getNeighbours(List<? extends DbscanPoint> points, double eps);
     void setNoise();
-    boolean isNoise();
+
+    default boolean isNoise() {
+        return getClusterId() == NOISE;
+    }
+
+    default boolean isVisited() {
+        return getClusterId() != UNVISITED;
+    }
+
+    /**
+     * Проверяет была ли точка ассоциирована с каким-либо кластером
+     * @return - true/false
+     */
+    default boolean isAssigned() {
+        return getClusterId() > UNVISITED;
+    }
+
 //    void setVisited(boolean isVisited);
-    boolean isVisited();
 
     /**
      * Id кластера, к которому принадлежит элемент.

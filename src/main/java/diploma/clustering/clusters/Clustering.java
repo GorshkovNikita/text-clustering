@@ -27,6 +27,28 @@ public abstract class Clustering<C extends Cluster<T>, T> implements Serializabl
         return null;
     }
 
+    public void deleteClusterById(int clusterId) {
+        for(C cluster: clusters) {
+            if (cluster.getClusterId() == clusterId) {
+                clusters.remove(cluster);
+                return;
+            }
+        }
+    }
+
+    /**
+     * Слияние двух или более кластеров в один. При этом все элементы
+     * ассоциируются с первым кластером. После чего остальные кластера удаляются
+     * @param firstCluster - первый кластер
+     * @param otherClusters - остальные кластера
+     */
+    public final void mergeClusters(C firstCluster, List<C> otherClusters) {
+        for (C cluster: otherClusters) {
+            cluster.getAssignedPoints().forEach(firstCluster::assignPoint);
+            clusters.remove(cluster);
+        }
+    }
+
     /**
      * Обработка следующей точки. Поиск ближайшего кластера и присоединение к нему точки.
      * Если такой кластер не найден, то создание нового

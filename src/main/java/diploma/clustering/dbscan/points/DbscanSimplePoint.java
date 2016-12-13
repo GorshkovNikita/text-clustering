@@ -32,10 +32,10 @@ public class DbscanSimplePoint extends Point implements DbscanPoint {
         this.clusterId = NOISE;
     }
 
-    @Override
-    public boolean isNoise() {
-        return clusterId == NOISE;
-    }
+//    @Override
+//    public boolean isNoise() {
+//        return clusterId == NOISE;
+//    }
 
 //    @Override
 //    public void setVisited(boolean isVisited) {
@@ -43,10 +43,10 @@ public class DbscanSimplePoint extends Point implements DbscanPoint {
 //        this.clusterId = isVisited;
 //    }
 
-    @Override
-    public boolean isVisited() {
-        return clusterId != UNVISITED;
-    }
+//    @Override
+//    public boolean isVisited() {
+//        return clusterId != UNVISITED;
+//    }
 
     @Override
     public int getClusterId() {
@@ -56,5 +56,24 @@ public class DbscanSimplePoint extends Point implements DbscanPoint {
     @Override
     public void setClusterId(int clusterId) {
         this.clusterId = clusterId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DbscanSimplePoint)) return false;
+        if (!super.equals(o)) return false;
+
+//        DbscanSimplePoint that = (DbscanSimplePoint) o;
+//
+//        if (id != that.id) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        return result;
     }
 }

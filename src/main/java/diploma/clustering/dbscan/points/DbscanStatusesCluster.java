@@ -46,10 +46,10 @@ public class DbscanStatusesCluster extends StatusesCluster implements DbscanPoin
         this.clusterId = NOISE;
     }
 
-    @Override
-    public boolean isNoise() {
-        return clusterId == NOISE;
-    }
+//    @Override
+//    public boolean isNoise() {
+//        return clusterId == NOISE;
+//    }
 
 //    @Override
 //    public void setVisited(boolean isVisited) {
@@ -57,10 +57,10 @@ public class DbscanStatusesCluster extends StatusesCluster implements DbscanPoin
 //        this.clusterId = isVisited;
 //    }
 
-    @Override
-    public boolean isVisited() {
-        return clusterId != UNVISITED;
-    }
+//    @Override
+//    public boolean isVisited() {
+//        return clusterId != UNVISITED;
+//    }
 
     @Override
     public int getClusterId() {
