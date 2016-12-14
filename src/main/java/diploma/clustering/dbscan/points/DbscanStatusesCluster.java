@@ -14,7 +14,7 @@ public class DbscanStatusesCluster extends StatusesCluster implements DbscanPoin
     private int clusterId = DbscanPoint.UNVISITED;
 
     public DbscanStatusesCluster() {
-
+        super();
     }
 
     public DbscanStatusesCluster(int clusterId, int clusterId1) {

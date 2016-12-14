@@ -81,7 +81,7 @@ public abstract class Dbscan<K extends Clustering<C, T>, C extends Cluster<T>, T
                     else {
                         C newCluster = addCluster(lastClusterId);
                         newCluster.assignPoint((T) point);
-                        point.setClusterId(newCluster.getClusterId());
+                        point.setClusterId(newCluster.getId());
                         expandCluster(newCluster, neighbours);
                         clustering.addCluster(newCluster);
                         lastClusterId++;
@@ -117,18 +117,20 @@ public abstract class Dbscan<K extends Clustering<C, T>, C extends Cluster<T>, T
     private void expandCluster(C cluster, List<DbscanPoint> neighbours) {
         while (!neighbours.isEmpty()) {
             DbscanPoint lastNeighbour = neighbours.remove(neighbours.size() - 1);
-            if (lastNeighbour.getClusterId() != cluster.getClusterId()) {
+            if (lastNeighbour.getClusterId() != cluster.getId()) {
                 if (lastNeighbour.isAssigned()) {
                     C assignedCluster = clustering.findClusterById(lastNeighbour.getClusterId());
                     assignedCluster.getAssignedPoints().remove(lastNeighbour);
+                    if (assignedCluster.getAssignedPoints().size() == 0)
+                        clustering.deleteClusterById(assignedCluster.getId());
                 }
-                lastNeighbour.setClusterId(cluster.getClusterId());
+                lastNeighbour.setClusterId(cluster.getId());
                 cluster.assignPoint((T) lastNeighbour);
                 List<DbscanPoint> neighboursOfNeighbour = lastNeighbour.getNeighbours(allPoints, eps);
                 if (neighboursOfNeighbour.size() >= minNeighboursCount)
                     // TODO: здесь нужно проверять также, к кому относятся эти соседи (?)
                     for (DbscanPoint neighbourOfNeighbour: neighboursOfNeighbour)
-                        if (neighbourOfNeighbour.getClusterId() != cluster.getClusterId())
+                        if (neighbourOfNeighbour.getClusterId() != cluster.getId())
                             neighbours.add(neighbourOfNeighbour);
             }
         }

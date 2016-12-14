@@ -11,7 +11,8 @@ public class StatusesCluster extends Cluster<Status> {
     private TfIdf tfIdf;
 
     public StatusesCluster() {
-
+        super();
+        tfIdf = new TfIdf();
     }
 
     public StatusesCluster(int clusterId) {

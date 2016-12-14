@@ -65,7 +65,7 @@ public class StatusesClustering extends Clustering<DbscanStatusesCluster, Status
     }
 
     public void processWithDbscan(Path filePath) {
-        ClustersDbscan clustersDbscan = new ClustersDbscan(3, 0.1);
+        ClustersDbscan clustersDbscan = new ClustersDbscan(3, 0.3);
         int timestamp = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(filePath.toString()))) {
             String line = null;

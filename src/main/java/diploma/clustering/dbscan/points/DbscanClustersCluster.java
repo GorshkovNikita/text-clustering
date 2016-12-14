@@ -9,6 +9,9 @@ import java.util.List;
  * @author Никита
  */
 public class DbscanClustersCluster extends ClustersCluster implements DbscanPoint {
+    /**
+     * Идентификатор кластера, к которому элемент относится
+     */
     private int clusterId = DbscanPoint.UNVISITED;
 
     public DbscanClustersCluster(List<DbscanPoint> points) {

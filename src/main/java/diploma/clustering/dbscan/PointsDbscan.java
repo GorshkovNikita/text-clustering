@@ -89,7 +89,6 @@ public class PointsDbscan extends Dbscan<PointsClustering, PointsCluster, Point>
         // Слияние 2го и 3го кластеров
         points.add(new DbscanSimplePoint(new Double[]{1.0, 1.0}));
         points.add(new DbscanSimplePoint(new Double[]{1.0, 2.0}));
-        points.add(new DbscanSimplePoint(new Double[]{0.0, 4.0}));
         points.add(new DbscanSimplePoint(new Double[]{-1.0, 3.0}));
         pointsDbscan.run(points);
     }

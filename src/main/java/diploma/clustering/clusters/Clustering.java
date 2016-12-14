@@ -21,7 +21,7 @@ public abstract class Clustering<C extends Cluster<T>, T> implements Serializabl
 
     public C findClusterById(int clusterId) {
         for(C cluster: clusters) {
-            if (cluster.getClusterId() == clusterId)
+            if (cluster.getId() == clusterId)
                 return cluster;
         }
         return null;
@@ -29,7 +29,7 @@ public abstract class Clustering<C extends Cluster<T>, T> implements Serializabl
 
     public void deleteClusterById(int clusterId) {
         for(C cluster: clusters) {
-            if (cluster.getClusterId() == clusterId) {
+            if (cluster.getId() == clusterId) {
                 clusters.remove(cluster);
                 return;
             }

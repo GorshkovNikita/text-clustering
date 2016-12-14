@@ -8,15 +8,18 @@ import java.util.List;
  */
 public abstract class Cluster<T> {
     private List<T> assignedPoints;
-    private int clusterId;
+    /**
+     * Идентификатор кластера
+     */
+    private int id;
 
     public Cluster() {
-
+        assignedPoints = new ArrayList<>();
     }
 
-    public Cluster(int clusterId) {
+    public Cluster(int id) {
         assignedPoints = new ArrayList<>();
-        this.clusterId = clusterId;
+        this.id = id;
     }
 
     public Cluster(List<T> points) {
@@ -31,7 +34,7 @@ public abstract class Cluster<T> {
         return assignedPoints;
     }
 
-    public int getClusterId() {
-        return clusterId;
+    public int getId() {
+        return id;
     }
 }
