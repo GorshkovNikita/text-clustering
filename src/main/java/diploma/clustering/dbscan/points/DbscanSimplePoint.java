@@ -32,22 +32,6 @@ public class DbscanSimplePoint extends Point implements DbscanPoint {
         this.clusterId = NOISE;
     }
 
-//    @Override
-//    public boolean isNoise() {
-//        return clusterId == NOISE;
-//    }
-
-//    @Override
-//    public void setVisited(boolean isVisited) {
-//
-//        this.clusterId = isVisited;
-//    }
-
-//    @Override
-//    public boolean isVisited() {
-//        return clusterId != UNVISITED;
-//    }
-
     @Override
     public int getClusterId() {
         return clusterId;

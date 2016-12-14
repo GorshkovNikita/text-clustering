@@ -1,9 +1,8 @@
 package diploma.clustering.dbscan;
 
-import com.google.common.collect.Iterables;
-import diploma.clustering.dbscan.points.DbscanPoint;
 import diploma.clustering.clusters.Cluster;
 import diploma.clustering.clusters.Clustering;
+import diploma.clustering.dbscan.points.DbscanPoint;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,7 +21,6 @@ public abstract class Dbscan<K extends Clustering<C, T>, C extends Cluster<T>, T
     protected K clustering;
     private int lastClusterId = 1;
 
-    // TODO: Нужно хранить все точки для поиска соседей новых поступивших точек
     private List<DbscanPoint> allPoints = new ArrayList<>();
 
     public Dbscan(int minNeighboursCount, double eps) {
@@ -30,8 +28,6 @@ public abstract class Dbscan<K extends Clustering<C, T>, C extends Cluster<T>, T
         this.eps = eps;
     }
 
-    // возможно вместо этого переделать под clazz.newInstance();, где класс
-    // предается в конструктор
     public abstract C addCluster(int clusterId);
 
     /**
@@ -43,23 +39,7 @@ public abstract class Dbscan<K extends Clustering<C, T>, C extends Cluster<T>, T
         allPoints.addAll(newPoints);
         for (DbscanPoint point: newPoints) {
             if (!point.isVisited()) {
-                // TODO: назначать id кластера
-//                point.setVisited(true);
-                //
-                // TODO: так пока не получается, тк не все точки находятся сразу в allPoints
-//                allPoints.add(point);
                 List<DbscanPoint> neighbours = point.getNeighbours(allPoints, eps);
-                // or
-//                List<DbscanPoint> neighbours = point.getNeighbours(newPoints, eps);
-
-                // TODO: здесь нужно проверять id кластеров всех соседей.
-                // TODO: если у ВСЕХ UNVISITED, то создать новый кластер
-                // TODO: если у ВСЕХ одинаковый id > 0, то эта точка принадлежит кластеру с этим id
-                // TODO: если у ВСЕХ NOISE, то проверить количество и
-                // TODO: возможно создать новый кластер со всеми этими соседями
-                // TODO: непонятно, что делать, если разные id соседей (??)
-
-                // перенести внутрь if ?
                 if (neighbours.size() >= minNeighboursCount) {
                     HashSet<Integer> neighbourClusterIds = getSetOfNeighbourClusterIds(neighbours);
                     // все соседи относятся к одному и тому же кластеру
@@ -96,11 +76,8 @@ public abstract class Dbscan<K extends Clustering<C, T>, C extends Cluster<T>, T
                         point.setClusterId(clusterId);
                         cluster.assignPoint((T) point);
                         expandCluster(cluster, neighbours);
-//                        clustering.findClusterById(clusterId).assignPoint((T) point);
                     }
-                    // Когда все одинаковые + непосещенные
-                    // if (neighbourClusterIds.size() == 2 &&
-                    // neighbourClusterIds.stream().filter((id) -> id != DbscanPoint.UNVISITED).count() == 1)
+                    // TODO: нет проверки на то, если соседи относятся к разным кластерам + есть NOISE и UNVISITED
                     else {
                         C newCluster = addCluster(lastClusterId);
                         newCluster.assignPoint((T) point);
@@ -126,20 +103,9 @@ public abstract class Dbscan<K extends Clustering<C, T>, C extends Cluster<T>, T
      */
     private HashSet<Integer> getSetOfNeighbourClusterIds(List<? extends DbscanPoint> neighbours) {
         HashSet<Integer> neighbourClusterIds = new HashSet<>();
-//        int clusterId = neighbours.get(0).getClusterId();
-//        if (clusterId > DbscanPoint.UNVISITED) {
-//            neighbourClusterIds.add(clusterId);
         for (DbscanPoint neighbour : neighbours) {
             neighbourClusterIds.add(neighbour.getClusterId());
         }
-//        }
-//        else {
-//            for (int i = 1; i < neighbours.size(); i++) {
-//                if (clusterId != DbscanPoint.NOISE && clusterId != DbscanPoint.UNVISITED) {
-//                    return false;
-//                }
-//            }
-//        }
         return neighbourClusterIds;
     }
 
@@ -151,8 +117,6 @@ public abstract class Dbscan<K extends Clustering<C, T>, C extends Cluster<T>, T
     private void expandCluster(C cluster, List<DbscanPoint> neighbours) {
         while (!neighbours.isEmpty()) {
             DbscanPoint lastNeighbour = neighbours.remove(neighbours.size() - 1);
-            // if (!lastNeighbour.isVisited()) {
-            // if (!lastNeighbour.isAssigned()) {
             if (lastNeighbour.getClusterId() != cluster.getClusterId()) {
                 if (lastNeighbour.isAssigned()) {
                     C assignedCluster = clustering.findClusterById(lastNeighbour.getClusterId());
@@ -160,13 +124,10 @@ public abstract class Dbscan<K extends Clustering<C, T>, C extends Cluster<T>, T
                 }
                 lastNeighbour.setClusterId(cluster.getClusterId());
                 cluster.assignPoint((T) lastNeighbour);
-                // List<DbscanPoint> neighboursOfNeighbour = lastNeighbour.getNeighbours(newPoints, eps);
-                // or
                 List<DbscanPoint> neighboursOfNeighbour = lastNeighbour.getNeighbours(allPoints, eps);
                 if (neighboursOfNeighbour.size() >= minNeighboursCount)
-                    // TODO: здесь нужно проверять также, к кому относятся эти соседи
+                    // TODO: здесь нужно проверять также, к кому относятся эти соседи (?)
                     for (DbscanPoint neighbourOfNeighbour: neighboursOfNeighbour)
-//                        if (!neighbourOfNeighbour.isAssigned())
                         if (neighbourOfNeighbour.getClusterId() != cluster.getClusterId())
                             neighbours.add(neighbourOfNeighbour);
             }
