@@ -2,6 +2,7 @@ package diploma.clustering.tfidf;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import diploma.clustering.MapUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -212,6 +213,10 @@ public class TfIdf {
 
     public Map<String, Integer> getTermFrequencyMap() {
         return termFrequencyMap;
+    }
+
+    public void sortTermFrequencyMap() {
+        termFrequencyMap = MapUtil.sortByValue(termFrequencyMap);
     }
 
     public static int getGlobalDocumentNumber() {

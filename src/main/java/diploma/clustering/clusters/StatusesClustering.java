@@ -1,6 +1,7 @@
 package diploma.clustering.clusters;
 
 import diploma.clustering.CosineSimilarity;
+import diploma.clustering.MapUtil;
 import diploma.clustering.TextNormalizer;
 import diploma.clustering.dbscan.ClustersDbscan;
 import diploma.clustering.dbscan.points.DbscanStatusesCluster;
@@ -13,6 +14,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -31,7 +33,7 @@ public class StatusesClustering extends Clustering<DbscanStatusesCluster, Status
             Map<String, Double> tfIdfForAllDocuments = cluster.getTfIdf().getTfIdfForAllDocuments();
             Map<String, Double> tfIdfOfDocumentIntersection = cluster.getTfIdf().getTfIdfOfDocumentIntersection(normalizedText);
             Double similarity = CosineSimilarity.cosineSimilarity(tfIdfForAllDocuments, tfIdfOfDocumentIntersection);
-            if (similarity > 0.1 && similarity > maxSimilarity) {
+            if (similarity > 0.2 && similarity > maxSimilarity) {
                 nearestCluster = cluster;
                 maxSimilarity = similarity;
             }
@@ -65,7 +67,7 @@ public class StatusesClustering extends Clustering<DbscanStatusesCluster, Status
     }
 
     public void processWithDbscan(Path filePath) {
-        ClustersDbscan clustersDbscan = new ClustersDbscan(3, 0.3);
+        ClustersDbscan clustersDbscan = new ClustersDbscan(3, 0.4);
         int timestamp = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(filePath.toString()))) {
             String line = null;
@@ -87,12 +89,19 @@ public class StatusesClustering extends Clustering<DbscanStatusesCluster, Status
 
                     // TODO: для использования в Storm видимо нужно копировать коллекцию, потом очищать ее в болте,
                     // TODO: а копию отправлять в следующий spout
-                    clustersDbscan.run(getClusters()
+                    List<DbscanStatusesCluster> bigClusters = getClusters()
                             .stream()
                             .filter((cluster) -> cluster.getAssignedPoints().size() > MIN_POINTS)
-                            // Если дополнительно для фильтра использовать: && !cluster.isVisited()), то
-                            // тогда нельзя будет найти всех соседей
-                            .collect(Collectors.toList()));
+                                    // Если дополнительно для фильтра использовать: && !cluster.isVisited()), то
+                                    // тогда нельзя будет найти всех соседей
+                            .collect(Collectors.toList());
+                    for (DbscanStatusesCluster cluster: bigClusters) {
+                        cluster.getTfIdf().sortTermFrequencyMap();
+                    }
+                    clustersDbscan.run(bigClusters);
+                    for (DbscanStatusesCluster cluster: bigClusters) {
+                        getClusters().remove(cluster);
+                    }
                 }
             } while (line != null);
             br.close();

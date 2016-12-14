@@ -17,8 +17,7 @@ public class MapUtil
         });
 
         Map<K, V> result = new LinkedHashMap<K, V>();
-        for (Map.Entry<K, V> entry : list)
-        {
+        for (Map.Entry<K, V> entry : list) {
             result.put( entry.getKey(), entry.getValue() );
         }
         return result;
