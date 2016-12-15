@@ -23,6 +23,8 @@ public abstract class Dbscan<K extends Clustering<C, T>, C extends Cluster<T>, T
 
     private List<DbscanPoint> allPoints = new ArrayList<>();
 
+    public Dbscan() {}
+
     public Dbscan(int minNeighboursCount, double eps) {
         this.minNeighboursCount = minNeighboursCount;
         this.eps = eps;
@@ -44,8 +46,10 @@ public abstract class Dbscan<K extends Clustering<C, T>, C extends Cluster<T>, T
                     HashSet<Integer> neighbourClusterIds = getSetOfNeighbourClusterIds(neighbours);
                     // все соседи относятся к одному и тому же кластеру
                     if (neighbourClusterIds.size() == 1 && neighbourClusterIds.iterator().next() > DbscanPoint.UNVISITED) {
+
                         int clusterId = neighbours.get(0).getClusterId();
                         point.setClusterId(clusterId);
+                        // TODO: вылетает NullPointerException. Почему-то clusterId
                         clustering.findClusterById(clusterId).assignPoint((T) point);
                     }
                     // все соседи относятся к различным кластерам (шума и непройденных вершин нет) => просто объединяем кластера в один

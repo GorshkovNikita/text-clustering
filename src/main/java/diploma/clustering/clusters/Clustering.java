@@ -1,5 +1,8 @@
 package diploma.clustering.clusters;
 
+import diploma.clustering.Point;
+import diploma.clustering.dbscan.points.DbscanPoint;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +47,11 @@ public abstract class Clustering<C extends Cluster<T>, T> implements Serializabl
      */
     public final void mergeClusters(C firstCluster, List<C> otherClusters) {
         for (C cluster: otherClusters) {
-            cluster.getAssignedPoints().forEach(firstCluster::assignPoint);
+            cluster.getAssignedPoints().forEach((point) -> {
+                firstCluster.assignPoint(point);
+                if (point instanceof DbscanPoint)
+                    ((DbscanPoint) point).setClusterId(firstCluster.getId());
+            });
             clusters.remove(cluster);
         }
     }

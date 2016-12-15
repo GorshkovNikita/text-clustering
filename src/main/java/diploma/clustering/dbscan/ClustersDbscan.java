@@ -7,6 +7,7 @@ import diploma.clustering.dbscan.points.DbscanClustersCluster;
 import diploma.clustering.dbscan.points.DbscanPoint;
 import diploma.clustering.dbscan.points.DbscanStatusesCluster;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,7 +15,11 @@ import java.util.stream.Collectors;
  *
  * @author Никита
  */
-public class ClustersDbscan extends Dbscan<ClustersClustering, DbscanClustersCluster, DbscanStatusesCluster> {
+public class ClustersDbscan extends Dbscan<ClustersClustering, DbscanClustersCluster, DbscanStatusesCluster> implements Serializable {
+    public ClustersDbscan() {
+        super();
+    }
+
     public ClustersDbscan(int minNeighboursCount, double eps) {
         super(minNeighboursCount, eps);
         this.clustering = new ClustersClustering();

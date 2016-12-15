@@ -4,13 +4,14 @@ import diploma.clustering.CosineSimilarity;
 import diploma.clustering.clusters.StatusesCluster;
 import twitter4j.Status;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Никита
  */
-public class DbscanStatusesCluster extends StatusesCluster implements DbscanPoint {
+public class DbscanStatusesCluster extends StatusesCluster implements DbscanPoint, Serializable {
     private int clusterId = DbscanPoint.UNVISITED;
 
     public DbscanStatusesCluster() {
