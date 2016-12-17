@@ -140,4 +140,8 @@ public abstract class Dbscan<K extends Clustering<C, T>, C extends Cluster<T>, T
         }
     }
 
+    public K getClustering() {
+        return this.clustering;
+    }
+
 }
