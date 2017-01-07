@@ -12,6 +12,7 @@ public abstract class Cluster<T> {
      * Идентификатор кластера
      */
     private int id;
+    private long lastUpdateTime;
 
     public Cluster() {
         assignedPoints = new ArrayList<>();
@@ -36,5 +37,13 @@ public abstract class Cluster<T> {
 
     public int getId() {
         return id;
+    }
+
+    public long getLastUpdateTime() {
+        return lastUpdateTime;
+    }
+
+    public void setLastUpdateTime(long lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime;
     }
 }

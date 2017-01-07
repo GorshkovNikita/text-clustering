@@ -5,7 +5,9 @@ import diploma.clustering.dbscan.points.DbscanPoint;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @param <C> - тип кластера
@@ -14,6 +16,7 @@ import java.util.List;
  */
 public abstract class Clustering<C extends Cluster<T>, T> implements Serializable {
     protected List<C> clusters = new ArrayList<>();
+    private long timestamp = 0;
 
     public abstract C findNearestCluster(T point);
     public abstract C createNewCluster();
@@ -62,12 +65,17 @@ public abstract class Clustering<C extends Cluster<T>, T> implements Serializabl
      * @param point - кластеризуемый элемент
      */
     public void processNext(T point) {
+        timestamp++;
         C nearestCluster = findNearestCluster(point);
         if (nearestCluster == null) {
             C newCluster = createNewCluster();
             newCluster.assignPoint(point);
+            newCluster.setLastUpdateTime(timestamp);
             addCluster(newCluster);
-        } else nearestCluster.assignPoint(point);
+        } else {
+            nearestCluster.assignPoint(point);
+            nearestCluster.setLastUpdateTime(timestamp);
+        }
     }
 
     /**
@@ -76,5 +84,9 @@ public abstract class Clustering<C extends Cluster<T>, T> implements Serializabl
      */
     public void addCluster(C cluster) {
         clusters.add(cluster);
+    }
+
+    public long getTimestamp() {
+        return timestamp;
     }
 }

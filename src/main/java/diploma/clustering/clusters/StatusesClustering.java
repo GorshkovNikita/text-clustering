@@ -14,6 +14,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
  */
 public class StatusesClustering extends Clustering<DbscanStatusesCluster, Status> {
     private static final int MIN_POINTS = 100;
+    protected Map<String, Integer> frequentTerms;
 
     @Override
     public DbscanStatusesCluster findNearestCluster(Status point) {
@@ -44,6 +46,10 @@ public class StatusesClustering extends Clustering<DbscanStatusesCluster, Status
     @Override
     public DbscanStatusesCluster createNewCluster() {
         return new DbscanStatusesCluster();
+    }
+
+    public void updateFrequentTerms() {
+
     }
 
     public void process(Path filePath) {
