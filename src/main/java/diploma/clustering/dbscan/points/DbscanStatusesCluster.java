@@ -5,10 +5,7 @@ import diploma.clustering.clusters.StatusesCluster;
 import twitter4j.Status;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -49,8 +46,12 @@ public class DbscanStatusesCluster extends StatusesCluster implements DbscanPoin
         for (DbscanPoint cluster: clusters) {
             if (cluster != this)
                 if (CosineSimilarity.cosineSimilarity(
-                        filterTfIdfByFrequentTerms(this.getTfIdf().getTfIdfForAllDocuments(), frequentTerms, clusters.size()),
-                        filterTfIdfByFrequentTerms(((DbscanStatusesCluster) cluster).getTfIdf().getTfIdfForAllDocuments(), frequentTerms, clusters.size())
+                        filterTfIdfByFrequentTerms(this.getTfIdf().getTfIdfForAllDocuments(), frequentTerms, clusters.size()).entrySet().stream()
+                                .limit(100)
+                                .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue())),
+                        filterTfIdfByFrequentTerms(((DbscanStatusesCluster) cluster).getTfIdf().getTfIdfForAllDocuments(), frequentTerms, clusters.size()).entrySet().stream()
+                                .limit(100)
+                                .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()))
                 )
                         >= eps)
                     neighbours.add(cluster);
