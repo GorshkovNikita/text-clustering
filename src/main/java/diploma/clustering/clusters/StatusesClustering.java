@@ -26,6 +26,14 @@ public class StatusesClustering extends Clustering<DbscanStatusesCluster, Status
     private static final int MIN_POINTS = 100;
     protected Map<String, Integer> frequentTerms;
 
+    public StatusesClustering() {
+        super();
+    }
+
+    public StatusesClustering(Double minSimilarity) {
+        super(minSimilarity);
+    }
+
     @Override
     public DbscanStatusesCluster findNearestCluster(Status point) {
         String normalizedText = TextNormalizer.getInstance().normalizeToString(point.getText());
@@ -35,7 +43,7 @@ public class StatusesClustering extends Clustering<DbscanStatusesCluster, Status
             Map<String, Double> tfIdfForAllDocuments = cluster.getTfIdf().getTfIdfForAllDocuments();
             Map<String, Double> tfIdfOfDocumentIntersection = cluster.getTfIdf().getTfIdfOfDocumentIntersection(normalizedText);
             Double similarity = CosineSimilarity.cosineSimilarity(tfIdfForAllDocuments, tfIdfOfDocumentIntersection);
-            if (similarity > 0.2 && similarity > maxSimilarity) {
+            if (similarity > minSimilarity && similarity > maxSimilarity) {
                 nearestCluster = cluster;
                 maxSimilarity = similarity;
             }
@@ -72,6 +80,10 @@ public class StatusesClustering extends Clustering<DbscanStatusesCluster, Status
         }
     }
 
+    /**
+     * Для тестовых целей НЕ в Apache Storm
+     * @param filePath - путь к файлу с твитами
+     */
     public void processWithDbscan(Path filePath) {
         ClustersDbscan clustersDbscan = new ClustersDbscan(3, 0.4);
         int timestamp = 0;
@@ -117,9 +129,9 @@ public class StatusesClustering extends Clustering<DbscanStatusesCluster, Status
         }
     }
 
-    public static void main(String[] args) {
-        StatusesClustering clustering = new StatusesClustering();
-        clustering.process(Paths.get(Clustering.class.getClassLoader().getResource("2016-10-19-champions-league-first-1000.txt").getFile().substring(1)));
-        System.out.println("Count of clusters = " + clustering.clusters.size());
-    }
+//    public static void main(String[] args) {
+//        StatusesClustering clustering = new StatusesClustering(0.2);
+//        clustering.process(Paths.get(Clustering.class.getClassLoader().getResource("2016-10-19-champions-league-first-1000.txt").getFile().substring(1)));
+//        System.out.println("Count of clusters = " + clustering.clusters.size());
+//    }
 }

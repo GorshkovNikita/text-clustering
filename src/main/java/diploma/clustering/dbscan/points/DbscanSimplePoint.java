@@ -1,5 +1,7 @@
 package diploma.clustering.dbscan.points;
 
+import diploma.clustering.CosineSimilarity;
+import diploma.clustering.MapUtil;
 import diploma.clustering.VectorOperations;
 import diploma.clustering.Point;
 
@@ -21,7 +23,8 @@ public class DbscanSimplePoint extends Point implements DbscanPoint {
         List<DbscanPoint> neighbours = new ArrayList<>();
         for (DbscanPoint point: points) {
             if (point != this)
-                if (VectorOperations.euclideanDistance(((Point)point).getCoordinatesVector(), this.getCoordinatesVector()) < eps)
+                if (VectorOperations.euclideanDistance(
+                        ((Point) point).getCoordinatesVector(), this.getCoordinatesVector()) <= eps)
                     neighbours.add(point);
         }
         return neighbours;

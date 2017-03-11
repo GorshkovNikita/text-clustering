@@ -1,5 +1,8 @@
 package diploma.clustering.dbscan;
 
+import diploma.clustering.clusters.PointsClustersClustering;
+import diploma.clustering.dbscan.points.DbscanPointsCluster;
+import diploma.clustering.dbscan.points.DbscanPointsClustersCluster;
 import diploma.clustering.dbscan.points.DbscanSimplePoint;
 import diploma.clustering.Point;
 import diploma.clustering.clusters.PointsCluster;
@@ -11,15 +14,15 @@ import java.util.List;
 /**
  * @author Никита
  */
-public class PointsDbscan extends Dbscan<PointsClustering, PointsCluster, Point> {
+public class PointsDbscan extends Dbscan<PointsClustersClustering, DbscanPointsClustersCluster, DbscanPointsCluster> {
     public PointsDbscan(int minNeighboursCount, double eps) {
         super(minNeighboursCount, eps);
-        this.clustering = new PointsClustering();
+        this.clustering = new PointsClustersClustering();
     }
 
     @Override
-    public PointsCluster addCluster(int clusterId) {
-        return new PointsCluster(clusterId);
+    public DbscanPointsClustersCluster addCluster(int clusterId) {
+        return new DbscanPointsClustersCluster(clusterId);
     }
 
     public static void main(String[] args) {

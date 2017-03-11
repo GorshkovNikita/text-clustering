@@ -17,6 +17,14 @@ import java.util.Map;
 public abstract class Clustering<C extends Cluster<T>, T> implements Serializable {
     protected List<C> clusters = new ArrayList<>();
     private long timestamp = 0;
+    protected Double minSimilarity;
+
+    public Clustering() {
+    }
+
+    public Clustering(Double minSimilarity) {
+        this.minSimilarity = minSimilarity;
+    }
 
     public abstract C findNearestCluster(T point);
     public abstract C createNewCluster();

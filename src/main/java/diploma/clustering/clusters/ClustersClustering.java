@@ -8,6 +8,14 @@ import diploma.clustering.dbscan.points.DbscanStatusesCluster;
  * @author Никита
  */
 public class ClustersClustering extends Clustering<DbscanClustersCluster, DbscanStatusesCluster> {
+    public ClustersClustering() {
+        super();
+    }
+
+    public ClustersClustering(Double minSimilarity) {
+        super(minSimilarity);
+    }
+
     @Override
     public DbscanClustersCluster findNearestCluster(DbscanStatusesCluster point) {
         return null;

@@ -32,4 +32,11 @@ public class MapUtil {
         }
         return target;
     }
+
+    public static <V> Map<String, V> mapFromArray(V[] array) {
+        Map<String, V> map = new HashMap<>();
+        for (int i = 0; i < array.length; i++)
+            map.put(String.valueOf(i), array[i]);
+        return map;
+    }
 }

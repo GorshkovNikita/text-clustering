@@ -46,7 +46,6 @@ public abstract class Dbscan<K extends Clustering<C, T>, C extends Cluster<T>, T
                     HashSet<Integer> neighbourClusterIds = getSetOfNeighbourClusterIds(neighbours);
                     // все соседи относятся к одному и тому же кластеру
                     if (neighbourClusterIds.size() == 1 && neighbourClusterIds.iterator().next() > DbscanPoint.UNVISITED) {
-
                         int clusterId = neighbours.get(0).getClusterId();
                         point.setClusterId(clusterId);
                         // TODO: вылетает NullPointerException. Почему-то clusterId
@@ -67,7 +66,7 @@ public abstract class Dbscan<K extends Clustering<C, T>, C extends Cluster<T>, T
                         clustering.mergeClusters(resultCluster, otherClusters);
                         resultCluster.assignPoint((T) point);
                     }
-                    // все соседи в одном кластере + NOISE + UNVISITED
+                    // все соседи в одном кластере + NOISE + UNVISITED => добавляем точку в этот кластер
                     else if (neighbourClusterIds.size() > 1 &&
                             neighbourClusterIds.stream().
                                     filter((id) -> id != DbscanPoint.UNVISITED && id != DbscanPoint.NOISE).count() == 1) {
@@ -82,6 +81,7 @@ public abstract class Dbscan<K extends Clustering<C, T>, C extends Cluster<T>, T
                         expandCluster(cluster, neighbours);
                     }
                     // TODO: нет проверки на то, если соседи относятся к разным кластерам + есть NOISE и UNVISITED
+                    // в остальных случаях просто создаем новый кластер
                     else {
                         C newCluster = addCluster(lastClusterId);
                         newCluster.assignPoint((T) point);
