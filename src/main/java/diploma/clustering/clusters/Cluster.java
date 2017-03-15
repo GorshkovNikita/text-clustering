@@ -14,6 +14,11 @@ public abstract class Cluster<T> {
     private int id;
     private long lastUpdateTime;
 
+    /**
+     * Идентификаторы кластеров, которые были слиты с данным кластером
+     */
+    private List<Integer> absorbedClusterIds = new ArrayList<>();
+
     public Cluster() {
         assignedPoints = new ArrayList<>();
     }
@@ -45,5 +50,9 @@ public abstract class Cluster<T> {
 
     public void setLastUpdateTime(long lastUpdateTime) {
         this.lastUpdateTime = lastUpdateTime;
+    }
+
+    public List<Integer> getAbsorbedClusterIds() {
+        return absorbedClusterIds;
     }
 }

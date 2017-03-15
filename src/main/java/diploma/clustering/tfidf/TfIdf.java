@@ -89,7 +89,6 @@ public class TfIdf {
         return Math.log10((double) globalDocumentNumber / (double) globalNumberOfDocumentsWithTermMap.get(term));
     }
 
-
     /**
      * Подсчет вектора tf-idf для документа с именем docName
      * То есть предполагается, что этот документ уже был добавлен в кластер

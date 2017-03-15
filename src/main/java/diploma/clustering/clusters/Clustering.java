@@ -63,6 +63,7 @@ public abstract class Clustering<C extends Cluster<T>, T> implements Serializabl
                 if (point instanceof DbscanPoint)
                     ((DbscanPoint) point).setClusterId(firstCluster.getId());
             });
+            firstCluster.getAbsorbedClusterIds().add(cluster.getId());
             clusters.remove(cluster);
         }
     }

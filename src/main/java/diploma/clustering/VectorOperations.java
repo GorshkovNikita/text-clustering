@@ -40,4 +40,16 @@ public class VectorOperations {
         }
         return resultVector;
     }
+
+    public static Double cosineSimilarity(Double[] firstVector, Double[] secondVector) {
+        if (firstVector.length != secondVector.length)
+            throw new IllegalArgumentException("Размерность векторов должна быть одинаковой");
+        Double dotProduct = 0.0, d1 = 0.0, d2 = 0.0;
+        for (int i = 0; i < firstVector.length; i++) {
+            dotProduct += firstVector[i] * secondVector[i];
+            d1 += Math.pow(firstVector[i], 2);
+            d2 += Math.pow(secondVector[i], 2);
+        }
+        return dotProduct / (Math.sqrt(d1) * Math.sqrt(d2));
+    }
 }

@@ -68,4 +68,12 @@ public class VectorOperationsTest {
         assertArrayEquals(new Double[] {6.0, 30.0, 12.0}, VectorOperations.scalarMultiplication(vector, 3.0));
         assertArrayEquals(new Double[] {-6.0, -30.0, -12.0}, VectorOperations.scalarMultiplication(vector, -1.0));
     }
+
+    @Test
+    public void testCosineSimilarity() {
+        Double[] firstVector = new Double[] {0.0, 3.0, 0.0};
+        Double[] secondVector = new Double[] {2.0, 0.0, 4.0};
+        Double similarity = VectorOperations.cosineSimilarity(firstVector, secondVector);
+        assertEquals((Double) 0.0, similarity);
+    }
 }
