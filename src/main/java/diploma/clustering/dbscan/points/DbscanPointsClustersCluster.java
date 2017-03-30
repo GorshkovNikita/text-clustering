@@ -13,13 +13,17 @@ public class DbscanPointsClustersCluster extends PointsClustersCluster implement
      */
     private int clusterId = DbscanPoint.UNVISITED;
 
-    public DbscanPointsClustersCluster(List<DbscanPoint> points) {
-        super((List<DbscanPointsCluster>)(List<?>)points);
+    public DbscanPointsClustersCluster() {
+        super();
     }
+//
+//    public DbscanPointsClustersCluster(List<DbscanPoint> points) {
+//        super((List<DbscanPointsCluster>)(List<?>)points);
+//    }
 
-    public DbscanPointsClustersCluster(int clusterId) {
-        super(clusterId);
-    }
+//    public DbscanPointsClustersCluster(int clusterId) {
+//        super(clusterId);
+//    }
 
     @Override
     public List<DbscanPoint> getNeighbours(List<? extends DbscanPoint> points, double eps) {

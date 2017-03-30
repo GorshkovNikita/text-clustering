@@ -18,7 +18,7 @@ public interface DbscanPoint {
      *            может быть значением косинуса угла или евклидовым расстоянием
      * @return - список соседей
      */
-    List<DbscanPoint> getNeighbours(List<? extends DbscanPoint> points, double eps);
+    List<? extends DbscanPoint> getNeighbours(List<? extends DbscanPoint> points, double eps);
     void setNoise();
 
     default boolean isNoise() {

@@ -9,11 +9,14 @@ import java.util.List;
  * @author Никита
  */
 public class PointsClustersCluster extends Cluster<DbscanPointsCluster> {
-    public PointsClustersCluster(int clusterId) {
-        super(clusterId);
+    public PointsClustersCluster() {
     }
 
-    public PointsClustersCluster(List<DbscanPointsCluster> points) {
-        super(points);
-    }
+//    public PointsClustersCluster(int clusterId) {
+//        super(clusterId);
+//    }
+//
+//    public PointsClustersCluster(List<DbscanPointsCluster> points) {
+//        super(points);
+//    }
 }

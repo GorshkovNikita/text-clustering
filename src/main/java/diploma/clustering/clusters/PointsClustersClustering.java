@@ -22,8 +22,8 @@ public class PointsClustersClustering extends Clustering<DbscanPointsClustersClu
         return null;
     }
 
-    @Override
-    public DbscanPointsClustersCluster createNewCluster() {
-        return null;
-    }
+//    @Override
+//    public DbscanPointsClustersCluster createNewCluster() {
+//        return new DbscanPointsClustersCluster();
+//    }
 }

@@ -1,12 +1,6 @@
 package diploma.clustering.dbscan;
 
-import diploma.clustering.clusters.PointsClustersClustering;
-import diploma.clustering.dbscan.points.DbscanPointsCluster;
-import diploma.clustering.dbscan.points.DbscanPointsClustersCluster;
 import diploma.clustering.dbscan.points.DbscanSimplePoint;
-import diploma.clustering.Point;
-import diploma.clustering.clusters.PointsCluster;
-import diploma.clustering.clusters.PointsClustering;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,17 +8,17 @@ import java.util.List;
 /**
  * @author Никита
  */
-public class PointsDbscan extends Dbscan<PointsClustersClustering, DbscanPointsClustersCluster, DbscanPointsCluster> {
-    public PointsDbscan(int minNeighboursCount, double eps) {
-        super(minNeighboursCount, eps);
-        this.clustering = new PointsClustersClustering();
-    }
-
-    @Override
-    public DbscanPointsClustersCluster addCluster(int clusterId) {
-        return new DbscanPointsClustersCluster(clusterId);
-    }
-
+public class PointsDbscan {// extends Dbscan<PointsClustersClustering, DbscanPointsClustersCluster, DbscanPointsCluster> {
+//    public PointsDbscan(int minNeighboursCount, double eps) {
+//        super(minNeighboursCount, eps);
+//        this.clustering = new PointsClustersClustering();
+//    }
+//
+//    @Override
+//    public DbscanPointsClustersCluster addCluster(int clusterId) {
+//        return new DbscanPointsClustersCluster(clusterId);
+//    }
+//
     public static void main(String[] args) {
         // Тест 1
 //        List<DbscanSimplePoint> points = new ArrayList<>();
@@ -63,7 +57,7 @@ public class PointsDbscan extends Dbscan<PointsClustersClustering, DbscanPointsC
 //
         // Тест 2
         List<DbscanSimplePoint> points = new ArrayList<>();
-        PointsDbscan pointsDbscan = new PointsDbscan(3, 1.5);
+        StatefulDbscan pointsDbscan = new StatefulDbscan(3, 1.5);
         // Кластер 1
         points.add(new DbscanSimplePoint(new Double[]{-1.0, 4.0}));
         points.add(new DbscanSimplePoint(new Double[]{-2.0, 4.0}));
@@ -93,6 +87,7 @@ public class PointsDbscan extends Dbscan<PointsClustersClustering, DbscanPointsC
         points.add(new DbscanSimplePoint(new Double[]{1.0, 1.0}));
         points.add(new DbscanSimplePoint(new Double[]{1.0, 2.0}));
         points.add(new DbscanSimplePoint(new Double[]{-1.0, 3.0}));
+        points.add(new DbscanSimplePoint(new Double[]{-2.0, 4.0}));
         pointsDbscan.run(points);
     }
 }

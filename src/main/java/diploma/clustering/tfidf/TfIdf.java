@@ -4,8 +4,10 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import diploma.clustering.MapUtil;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Класс, обсепечивающий подсчет tf-idf векторов.
@@ -13,7 +15,7 @@ import java.util.Map;
  * Кластером является объект класса {@link diploma.clustering.neuralgas.Neuron}.
  * @author Никита
  */
-public class TfIdf {
+public class TfIdf implements Serializable {
     /**
      * Общее число документов в корпусе
      */
@@ -86,7 +88,7 @@ public class TfIdf {
     }
 
     public static Double getGlobalTermIdf(String term) {
-        return Math.log10((double) globalDocumentNumber / (double) globalNumberOfDocumentsWithTermMap.get(term));
+            return Math.log10((double) globalDocumentNumber / Double.valueOf(globalNumberOfDocumentsWithTermMap.get(term)));
     }
 
     /**
@@ -218,11 +220,23 @@ public class TfIdf {
         termFrequencyMap = MapUtil.sortByValue(termFrequencyMap);
     }
 
+    public void limitTermFrequencyMap(int numberOfTerms) {
+        termFrequencyMap = MapUtil.putFirstEntries(numberOfTerms, termFrequencyMap);
+    }
+
     public static int getGlobalDocumentNumber() {
         return globalDocumentNumber;
     }
 
     public static Map<String, Integer> getGlobalNumberOfDocumentsWithTermMap() {
         return globalNumberOfDocumentsWithTermMap;
+    }
+
+    public static Map<String, Double> getTfIdfForSpecificText(String text) {
+        String[] terms = text.split(" ");
+        Map<String, Double> tfIdf = new HashMap<>();
+        for (String term : terms)
+            tfIdf.put(term, 1.0);
+        return tfIdf;
     }
 }

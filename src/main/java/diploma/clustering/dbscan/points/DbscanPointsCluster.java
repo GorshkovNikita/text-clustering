@@ -19,10 +19,10 @@ public class DbscanPointsCluster extends PointsCluster implements DbscanPoint, S
         super();
     }
 
-    public DbscanPointsCluster(int clusterId, int clusterId1) {
-        super(clusterId);
-        this.clusterId = clusterId1;
-    }
+//    public DbscanPointsCluster(int clusterId, int clusterId1) {
+//        super(clusterId);
+//        this.clusterId = clusterId1;
+//    }
 
     @Override
     public List<DbscanPoint> getNeighbours(List<? extends DbscanPoint> points, double eps) {

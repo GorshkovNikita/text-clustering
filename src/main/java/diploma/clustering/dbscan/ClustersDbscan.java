@@ -15,17 +15,17 @@ import java.util.stream.Collectors;
  *
  * @author Никита
  */
-public class ClustersDbscan extends Dbscan<ClustersClustering, DbscanClustersCluster, DbscanStatusesCluster> implements Serializable {
-    public ClustersDbscan() {
-        super();
-    }
-
-    public ClustersDbscan(int minNeighboursCount, double eps) {
-        super(minNeighboursCount, eps);
-        this.clustering = new ClustersClustering();
-    }
-
-    public DbscanClustersCluster addCluster(int clusterId) {
-        return new DbscanClustersCluster(clusterId);
-    }
+public class ClustersDbscan {// extends StatefulDbscan<ClustersClustering, DbscanClustersCluster, DbscanStatusesCluster> implements Serializable {
+//    public ClustersDbscan() {
+//        super();
+//    }
+//
+//    public ClustersDbscan(int minNeighboursCount, double eps) {
+//        super(minNeighboursCount, eps);
+//        this.clustering = new ClustersClustering();
+//    }
+//
+//    public DbscanClustersCluster addCluster(int clusterId) {
+//        return new DbscanClustersCluster(clusterId);
+//    }
 }

@@ -14,23 +14,36 @@ import java.util.Map;
  * @param <T> - кластеризуемый тип данных
  * @author Никита
  */
-public abstract class Clustering<C extends Cluster<T>, T> implements Serializable {
+public class Clustering<C extends Cluster<T>, T> implements Serializable {
     protected List<C> clusters = new ArrayList<>();
-    private long timestamp = 0;
+//    protected long timestamp = 0;
     protected Double minSimilarity;
+    // id последнего добавленного кластера, то есть при добавлении нового нужно увеличить это число на 1
+    private int lastClusterId;
 
-    public Clustering() {
-    }
+    public Clustering() {}
 
     public Clustering(Double minSimilarity) {
         this.minSimilarity = minSimilarity;
     }
 
-    public abstract C findNearestCluster(T point);
-    public abstract C createNewCluster();
+    public C findNearestCluster(T point) {
+        return null;
+    }
+//    public abstract C createNewCluster();
 
     public List<C> getClusters() {
         return clusters;
+    }
+
+    /**
+     * Добавление нового кластера
+     * @param cluster - новый кластер
+     */
+    public void addCluster(C cluster) {
+        clusters.add(cluster);
+        cluster.setCreationTime(System.currentTimeMillis());
+        lastClusterId = cluster.getId();
     }
 
     public C findClusterById(int clusterId) {
@@ -68,34 +81,30 @@ public abstract class Clustering<C extends Cluster<T>, T> implements Serializabl
         }
     }
 
+    public int getLastClusterId() {
+        return lastClusterId;
+    }
+
     /**
      * Обработка следующей точки. Поиск ближайшего кластера и присоединение к нему точки.
      * Если такой кластер не найден, то создание нового
      * @param point - кластеризуемый элемент
      */
-    public void processNext(T point) {
-        timestamp++;
-        C nearestCluster = findNearestCluster(point);
-        if (nearestCluster == null) {
-            C newCluster = createNewCluster();
-            newCluster.assignPoint(point);
-            newCluster.setLastUpdateTime(timestamp);
-            addCluster(newCluster);
-        } else {
-            nearestCluster.assignPoint(point);
-            nearestCluster.setLastUpdateTime(timestamp);
-        }
-    }
+//    public void processNext(T point) {
+//        timestamp++;
+//        C nearestCluster = findNearestCluster(point);
+//        if (nearestCluster == null) {
+//            C newCluster = createNewCluster();
+//            newCluster.assignPoint(point);
+//            newCluster.setLastUpdateTime(timestamp);
+//            addCluster(newCluster);
+//        } else {
+//            nearestCluster.assignPoint(point);
+//            nearestCluster.setLastUpdateTime(timestamp);
+//        }
+//    }
 
-    /**
-     * Добавление нового кластера
-     * @param cluster - новый кластер
-     */
-    public void addCluster(C cluster) {
-        clusters.add(cluster);
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
+//    public long getTimestamp() {
+//        return timestamp;
+//    }
 }

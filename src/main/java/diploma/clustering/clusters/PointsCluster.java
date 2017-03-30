@@ -16,9 +16,9 @@ public class PointsCluster extends Cluster<DbscanSimplePoint> {
     public PointsCluster() {
     }
 
-    public PointsCluster(int clusterId) {
-        super(clusterId);
-    }
+//    public PointsCluster(int clusterId) {
+//        super(clusterId);
+//    }
 
     public PointsCluster(List<DbscanSimplePoint> points) {
         super(points);

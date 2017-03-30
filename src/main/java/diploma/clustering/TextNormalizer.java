@@ -3,7 +3,6 @@ package diploma.clustering;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
-import edu.stanford.nlp.pipeline.POSTaggerAnnotator;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.simple.Sentence;
 import edu.stanford.nlp.util.CoreMap;
@@ -38,7 +37,9 @@ public class TextNormalizer {
             "this", "those", "though", "three", "through", "throughout", "thru", "thus", "to", "together", "too", "top", "toward", "towards", "twelve", "twenty",
             "two", "un", "under", "until", "up", "upon", "us", "very", "via", "was", "we", "well", "were", "what", "whatever", "when", "whence", "whenever", "where",
             "whereafter", "whereas", "whereby", "wherein", "whereupon", "wherever", "whether", "which", "while", "whither", "who", "whoever", "whole", "whom", "whose",
-            "why", "will", "with", "within", "without", "would", "yet", "you", "your", "yours", "yourself", "yourselves", "the"
+            "why", "will", "with", "within", "without", "would", "yet", "you", "your", "yours", "yourself", "yourselves", "the","time","today","people","person",
+            "year","way","day", "thing","man","world","life","hand","part","child","eye","woman","place","work","week","case","point","government","company",
+            "number", "group","problem","fact","follow","follower","love"
     ));
 
 
@@ -71,15 +72,15 @@ public class TextNormalizer {
         for(CoreMap token: tokens) {
             String lemma = token.get(CoreAnnotations.LemmaAnnotation.class);
             String pos = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);
-            if (!stopWordList.contains(lemma) && !lemma.startsWith("https://") && (lemma.length() >= 4) && isVerbOrNoun(pos) && !lemma.equals("") && !lemma.startsWith("@"))
+            if (!stopWordList.contains(lemma) && !lemma.startsWith("https://") && !lemma.startsWith("http://") && (lemma.length() >= 4) && isNoun(pos) && !lemma.equals("") && !lemma.startsWith("@"))
                 resultString += lemma.toLowerCase() + " ";
         }
 
         return resultString;
     }
 
-    public boolean isVerbOrNoun(String pos) {
-        return Arrays.asList("MD", "NN", "NNS", "NNP", "NNPS", "VB", "VBD", "VBZ", "VBG", "VBN", "VBP").contains(pos);
+    public boolean isNoun(String pos) {
+        return Arrays.asList("NN", "NNS", "NNP", "NNPS").contains(pos);
     }
 
     public String simpleNormalize(String text) {

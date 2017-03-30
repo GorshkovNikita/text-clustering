@@ -18,10 +18,10 @@ public class PointsClustering extends Clustering<DbscanPointsCluster, DbscanSimp
         super(minSimilarity);
     }
 
-    @Override
-    public DbscanPointsCluster createNewCluster() {
-        return new DbscanPointsCluster();
-    }
+//    @Override
+//    public DbscanPointsCluster createNewCluster() {
+//        return new DbscanPointsCluster();
+//    }
 
     @Override
     public DbscanPointsCluster findNearestCluster(DbscanSimplePoint point) {

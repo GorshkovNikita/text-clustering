@@ -20,8 +20,8 @@ public class TextNormalizerTest {
         String verb = "VB";
         String noun = "NN";
         String adjective = "JJ";
-        assertEquals(true, normalizer.isVerbOrNoun(verb));
-        assertEquals(true, normalizer.isVerbOrNoun(noun));
-        assertEquals(false, normalizer.isVerbOrNoun(adjective));
+        assertEquals(false, normalizer.isNoun(verb));
+        assertEquals(true, normalizer.isNoun(noun));
+        assertEquals(false, normalizer.isNoun(adjective));
     }
 }

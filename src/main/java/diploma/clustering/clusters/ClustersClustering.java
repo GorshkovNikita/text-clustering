@@ -21,8 +21,12 @@ public class ClustersClustering extends Clustering<DbscanClustersCluster, Dbscan
         return null;
     }
 
-    @Override
-    public DbscanClustersCluster createNewCluster() {
-        return null;
+//    @Override
+//    public DbscanClustersCluster createNewCluster() {
+//        return null;
+//    }
+
+    public static void main(String[] args) {
+
     }
 }
