@@ -72,6 +72,12 @@
             <version>2.0.7</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.gorshkov</groupId>
+            <artifactId>clustering-statistics</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>

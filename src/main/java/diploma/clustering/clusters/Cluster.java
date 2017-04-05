@@ -15,7 +15,7 @@ public class Cluster<T> implements Serializable {
     private int id;
     private long creationTime;
     protected long lastUpdateTime;
-    private double lambda;
+    protected double lambda;
     protected int size;
 
     /**
@@ -80,5 +80,9 @@ public class Cluster<T> implements Serializable {
 
     public List<Integer> getAbsorbedClusterIds() {
         return absorbedClusterIds;
+    }
+
+    public int getSize() {
+        return size;
     }
 }

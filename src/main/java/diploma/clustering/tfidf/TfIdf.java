@@ -7,7 +7,6 @@ import diploma.clustering.MapUtil;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Класс, обсепечивающий подсчет tf-idf векторов.
@@ -88,7 +87,7 @@ public class TfIdf implements Serializable {
     }
 
     public static Double getGlobalTermIdf(String term) {
-            return Math.log10((double) globalDocumentNumber / Double.valueOf(globalNumberOfDocumentsWithTermMap.get(term)));
+        return Math.log10((double) globalDocumentNumber / (double) globalNumberOfDocumentsWithTermMap.get(term));
     }
 
     /**
@@ -174,8 +173,10 @@ public class TfIdf implements Serializable {
         Map<String, Double> tfIdfMap = new HashMap<>();
         for (Map.Entry<String, Integer> termAndItsFrequency: this.termFrequencyMap.entrySet()) {
             if (docTermFrequencyMap.containsKey(termAndItsFrequency.getKey())) {
-                double tf = (double) docTermFrequencyMap.get(termAndItsFrequency.getKey()) / (double) termsNumber;
-                tfIdfMap.put(termAndItsFrequency.getKey(), tf * getGlobalTermIdf(termAndItsFrequency.getKey()));
+//                double tf = (double) docTermFrequencyMap.get(termAndItsFrequency.getKey()) / (double) termsNumber;
+                double tf = 1.0;
+                double idfInCluster = this.getTermIdf(termAndItsFrequency.getKey());
+                tfIdfMap.put(termAndItsFrequency.getKey(), tf);// * getGlobalTermIdf(termAndItsFrequency.getKey()));
             }
         }
         return tfIdfMap;

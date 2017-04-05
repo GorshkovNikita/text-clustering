@@ -2,6 +2,9 @@ package diploma.clustering;
 
 import diploma.clustering.neuralgas.NeuralGas;
 import diploma.clustering.tfidf.TfIdf;
+import twitter4j.Status;
+import twitter4j.TwitterException;
+import twitter4j.TwitterObjectFactory;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -106,7 +109,7 @@ public class Main {
         neuralGas.init(first, second);
         neuralGas.runAdaptiveIncrementalClustering(
                 convertVectorModelsToPoints(
-                        process(Paths.get(Main.class.getClassLoader().getResource("sample-tweets-champions-league-first-1000.txt").getFile()
+                        process(Paths.get(Main.class.getClassLoader().getResource("2016-10-19-champions-league-first-1000.txt").getFile()
                                 .substring(1)))));
 //        neuralGas.init(new Double[] { 0.0, 0.0}, new Double[] {0.1, 0.1});
 //        neuralGas.runAdaptiveIncrementalClustering(PointsCreator.createTwoDimensionalPoints(100000));

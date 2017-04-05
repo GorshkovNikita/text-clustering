@@ -37,7 +37,7 @@ public class DbscanStatusesCluster implements DbscanPoint, Serializable {
      */
     @Override
     public List<DbscanStatusesCluster> getNeighbours(List<? extends DbscanPoint> clusters, double eps) {
-        Map<String, Integer> frequentTerms = new HashMap<>();
+//        Map<String, Integer> frequentTerms = new HashMap<>();
 //        for (DbscanPoint cluster: clusters) {
 //            int i = 0;
 //            for (Map.Entry<String, Integer> termWithItsFrequency: ((DbscanStatusesCluster)cluster).getStatusesCluster().getTfIdf().getTermFrequencyMap().entrySet()) {

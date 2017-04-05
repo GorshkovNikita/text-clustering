@@ -39,7 +39,17 @@ public class TextNormalizer {
             "whereafter", "whereas", "whereby", "wherein", "whereupon", "wherever", "whether", "which", "while", "whither", "who", "whoever", "whole", "whom", "whose",
             "why", "will", "with", "within", "without", "would", "yet", "you", "your", "yours", "yourself", "yourselves", "the","time","today","people","person",
             "year","way","day", "thing","man","world","life","hand","part","child","eye","woman","place","work","week","case","point","government","company",
-            "number", "group","problem","fact","follow","follower","love"
+            "number", "group","problem","fact","follow","follower","love",
+
+            "thank", "thanks", "girl", "click", "shit", "bitch", "friend", "game", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday", "weekend",
+            "home", "fuck", "season", "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december",
+            "month", "year", "winter", "autumn", "fall", "spring", "summer", "team","birthday","baby","nigga","tonight", "tomorrow","yesterday", "today","retweet","twitter","tweet","live",
+            "morning", "evening", "noon","afternoon","night","photo","news","woman","man","women","men","lmao","dude","congrat","congrats","somebody","everybody","player","white",
+            "hour","minute","second","reason","picture","view","head","heart","opening","http","future","free","update","club","watch","state","story","stadium","money",
+            "size","word","ticket","games","hope","feeling","account","need","john"
+
+            //"weightlifting", "sports", "sport", "football", "cycling", "snooker", "tennis", "hockey", "skating", "superbike",
+            //"#sports", "#sport", "#football", "#cycling", "#hockey", "#tennis"
     ));
 
 
@@ -72,8 +82,9 @@ public class TextNormalizer {
         for(CoreMap token: tokens) {
             String lemma = token.get(CoreAnnotations.LemmaAnnotation.class);
             String pos = token.get(CoreAnnotations.PartOfSpeechAnnotation.class);
-            if (!stopWordList.contains(lemma) && !lemma.startsWith("https://") && !lemma.startsWith("http://") && (lemma.length() >= 4) && isNoun(pos) && !lemma.equals("") && !lemma.startsWith("@"))
-                resultString += lemma.toLowerCase() + " ";
+            lemma = lemma.toLowerCase();
+            if (!stopWordList.contains(lemma) && !lemma.startsWith("https://") && !lemma.startsWith("http://") && (lemma.length() >= 4) && isNoun(pos) /* && isVerbNounOrAdjective(pos) */ && !lemma.equals("") && !lemma.startsWith("@"))
+                resultString += lemma + " ";
         }
 
         return resultString;
@@ -81,6 +92,10 @@ public class TextNormalizer {
 
     public boolean isNoun(String pos) {
         return Arrays.asList("NN", "NNS", "NNP", "NNPS").contains(pos);
+    }
+
+    public boolean isVerbNounOrAdjective(String pos) {
+        return Arrays.asList("NN", "NNS", "NNP", "NNPS", "JJ", "VB").contains(pos);
     }
 
     public String simpleNormalize(String text) {

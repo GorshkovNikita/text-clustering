@@ -249,9 +249,8 @@ public class NeuralGas {
             Map<Point, Neuron> needToReattachPointsWithNearestNeuron = new HashMap<>();
             for (Point point: neuron.getPoints()) {
                 Neuron nearestNeuron = findNearestNeuron(point);
-                if (!nearestNeuron.equals(neuron)) {
+                if (!nearestNeuron.equals(neuron))
                     needToReattachPointsWithNearestNeuron.put(point, nearestNeuron);
-                }
             }
             for (Map.Entry<Point, Neuron> pointWithNearestNeuron: needToReattachPointsWithNearestNeuron.entrySet()) {
                 pointWithNearestNeuron.getValue().attachPoint(pointWithNearestNeuron.getKey());
