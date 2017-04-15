@@ -33,8 +33,8 @@ public class SimplifiedDbscanStatusesCluster extends DbscanStatusesCluster {
     }
 
     boolean hasCommonTopTerms(Map<String, Integer> firstClusterTermFrequencyMap, Map<String, Integer> secondClusterTermFrequencyMap) {
-        firstClusterTermFrequencyMap = MapUtil.sortByValue(firstClusterTermFrequencyMap).entrySet().stream().limit(15).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        secondClusterTermFrequencyMap = MapUtil.sortByValue(secondClusterTermFrequencyMap).entrySet().stream().limit(15).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        firstClusterTermFrequencyMap = MapUtil.sortByValue(firstClusterTermFrequencyMap).entrySet().stream().limit(10).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        secondClusterTermFrequencyMap = MapUtil.sortByValue(secondClusterTermFrequencyMap).entrySet().stream().limit(10).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         int numberOfCommonTerms = 0;
         for (String term : firstClusterTermFrequencyMap.keySet()) {
             if (secondClusterTermFrequencyMap.containsKey(term)) numberOfCommonTerms++;

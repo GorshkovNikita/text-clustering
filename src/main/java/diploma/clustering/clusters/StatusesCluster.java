@@ -2,8 +2,13 @@ package diploma.clustering.clusters;
 
 import diploma.clustering.EnhancedStatus;
 import diploma.clustering.tfidf.TfIdf;
+import org.mapdb.DataInput2;
+import org.mapdb.DataOutput2;
+import org.mapdb.Serializer;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * @author Никита
@@ -12,6 +17,7 @@ public class StatusesCluster extends Cluster<EnhancedStatus> implements Serializ
     private TfIdf tfIdf;
     private StatusesClustering potentialSubClustering;
     private StatusesClustering outlierSubClustering;
+
     // Нужны только если есть саб-кластеризация
     private int mu;
     private double beta;
@@ -71,5 +77,39 @@ public class StatusesCluster extends Cluster<EnhancedStatus> implements Serializ
 
     public StatusesClustering getPotentialSubClustering() {
         return potentialSubClustering;
+    }
+
+    public static class MapDbSerializer implements Serializer<StatusesCluster>, Serializable {
+        @Override
+        public void serialize(DataOutput2 out, StatusesCluster value) throws IOException {
+            out.writeInt(value.id);
+            out.writeInt(value.size);
+            out.writeLong(value.creationTime);
+            out.writeLong(value.lastUpdateTime);
+            new TfIdf.MapDbSerializer().serialize(out, value.tfIdf);
+        }
+
+        @Override
+        public StatusesCluster deserialize(DataInput2 input, int available) throws IOException {
+            StatusesCluster statusesCluster = new StatusesCluster(input.readInt(), 0.0002);
+            statusesCluster.size = input.readInt();
+            statusesCluster.creationTime = input.readLong();
+            statusesCluster.lastUpdateTime = input.readLong();
+            statusesCluster.tfIdf = new TfIdf.MapDbSerializer().deserialize(input, -1);
+            return statusesCluster;
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof StatusesCluster)) return false;
+        if (!super.equals(o)) return false;
+
+        StatusesCluster cluster = (StatusesCluster) o;
+
+        if (!tfIdf.equals(cluster.tfIdf)) return false;
+
+        return true;
     }
 }

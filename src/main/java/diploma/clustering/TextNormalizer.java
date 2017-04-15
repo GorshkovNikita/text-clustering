@@ -16,7 +16,7 @@ import java.util.*;
 public class TextNormalizer {
     private static final Set<String> stopWordList = new HashSet<>(Arrays.asList(
             ",", ":", ".", "!", "?", "\"", "..", "...", "``", "''", ";", "'", "`", "<", ">", "=", "@", "$",
-            "~", "==", "===", "-", "+", "_", "__", "#", "^", "*", "(", ")", "{", "}", "[", "]", "%",
+            "~", "==", "===", "-", "+", "_", "__", "#", "^", "*", "(", ")", "{", "}", "[", "]", "%",":-rrb-",":-lrb-","=--rrb-",
             "-lrb-", "-rrb-", "-lsb-", "-rsb-", "\\", "|", "/", "||", "--", "a", "about", "above", "above", "across", "after", "afterwards",
             "again", "against", "all", "almost", "alone", "along", "already", "also", "although", "always","am","among", "amongst", "amoungst",
             "amount",  "an", "and", "another", "any", "anyhow","anyone","anything","anyway", "anywhere", "are", "around", "as",  "at", "back","be",
@@ -44,12 +44,17 @@ public class TextNormalizer {
             "thank", "thanks", "girl", "click", "shit", "bitch", "friend", "game", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday", "weekend",
             "home", "fuck", "season", "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december",
             "month", "year", "winter", "autumn", "fall", "spring", "summer", "team","birthday","baby","nigga","tonight", "tomorrow","yesterday", "today","retweet","twitter","tweet","live",
-            "morning", "evening", "noon","afternoon","night","photo","news","woman","man","women","men","lmao","dude","congrat","congrats","somebody","everybody","player","white",
+            "morning", "evening", "noon","afternoon","night","photo","news","woman","man","women","men","lmao","dude","congrat","congrats","congratulation","congratulations","somebody","everybody","player","white",
             "hour","minute","second","reason","picture","view","head","heart","opening","http","future","free","update","club","watch","state","story","stadium","money",
-            "size","word","ticket","games","hope","feeling","account","need","john"
+            "size","word","ticket","games","hope","feeling","account","need","john","video","right","look","thought","damn","stuff","kind","sleep","house","dick","issue","kind",
+            "stay","matter","voice","post","type","ball","help","stop","bruh","couple","list","moment","attention","kinda","date","anybody","imma","idiot","play","shoe","shoes","great",
+            "field","dont","record","niggas","yeah","period","faith","know","note","pretty","character","read","podcast","effort","honey","schedule","crap","hahaha","asshole","doubt",
+            "north", "south", "west","east","city","title","#news","national","daily","event","half","talk","park","line","center","loss","recap","town","ride","water","level","review","area",
+            "online","sale","business","style","change",
 
-            //"weightlifting", "sports", "sport", "football", "cycling", "snooker", "tennis", "hockey", "skating", "superbike",
-            //"#sports", "#sport", "#football", "#cycling", "#hockey", "#tennis"
+            "weightlifting", "sports", "sport", "football", "cycling", "snooker", "tennis", "hockey", "skating", "superbike",
+            "#sports", "#sport", "#football", "#cycling", "#hockey", "#tennis","match","league","coach","goal","#sportsnews","playoff",
+            "injury","road","result","report","luck","preview","performance","level","manager","shot","spot","pitch","#openingday","opener","practice","leader"
     ));
 
 

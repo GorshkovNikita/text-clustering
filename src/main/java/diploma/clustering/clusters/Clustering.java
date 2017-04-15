@@ -19,7 +19,7 @@ public class Clustering<C extends Cluster<T>, T> implements Serializable {
 //    protected long timestamp = 0;
     protected Double minSimilarity;
     // id последнего добавленного кластера, то есть при добавлении нового нужно увеличить это число на 1
-    private int lastClusterId;
+    protected int lastClusterId;
 
     public Clustering() {}
 
@@ -107,4 +107,18 @@ public class Clustering<C extends Cluster<T>, T> implements Serializable {
 //    public long getTimestamp() {
 //        return timestamp;
 //    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (!(other instanceof Clustering)) return false;
+
+        Clustering clustering = (Clustering) other;
+
+        if (this.lastClusterId != clustering.lastClusterId) return false;
+        if (!this.minSimilarity.equals(clustering.minSimilarity)) return false;
+        if (!this.clusters.equals(clustering.clusters)) return false;
+
+        return true;
+    }
 }

@@ -1,5 +1,11 @@
 package diploma.clustering.clusters;
 
+import diploma.clustering.tfidf.TfIdf;
+import org.mapdb.DataInput2;
+import org.mapdb.DataOutput2;
+import org.mapdb.Serializer;
+
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +18,8 @@ public class Cluster<T> implements Serializable {
     /**
      * Идентификатор кластера
      */
-    private int id;
-    private long creationTime;
+    protected int id;
+    protected long creationTime;
     protected long lastUpdateTime;
     protected double lambda;
     protected int size;
@@ -84,5 +90,20 @@ public class Cluster<T> implements Serializable {
 
     public int getSize() {
         return size;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (!(other instanceof Cluster)) return false;
+
+        Cluster cluster = (Cluster) other;
+        if (this.id != cluster.id) return false;
+        if (this.size != cluster.size) return false;
+        if (this.creationTime != cluster.creationTime) return false;
+        if (this.lastUpdateTime != cluster.lastUpdateTime) return false;
+//        if (!this.absorbedClusterIds.equals(cluster.absorbedClusterIds)) return false;
+//        if (!this.assignedPoints.equals(cluster.assignedPoints)) return false;
+        return true;
     }
 }

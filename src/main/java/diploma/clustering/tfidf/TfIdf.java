@@ -3,9 +3,14 @@ package diploma.clustering.tfidf;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import diploma.clustering.MapUtil;
+import org.mapdb.DataInput2;
+import org.mapdb.DataOutput2;
+import org.mapdb.Serializer;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -26,28 +31,24 @@ public class TfIdf implements Serializable {
      * это количество документов в данном кластере
      */
     private int documentNumber = 0;
+
     /**
-     * Карта инверсий частот, всех слов,
-     * с которой они встречаются в документах корпуса
-     * TODO: удалить, тк не нужно из-за того, что его можно посчитать напрямую для слова
-     */
-//    public Map<String, Double> idfMap = new HashMap<>();
-    /**
-     * Количество появлений каждого слова во всем корпусе
+     * Количество появлений каждого слова во всем корпусе текущего кластера
      */
     private Map<String, Integer> termFrequencyMap = new HashMap<>();
     /**
-     * Карта, в которой ключом является слово, а значением - количество документов,
+     * Карта, в которой ключом является слово, а значением - количество документов этого кластера,
      * в которых это слово встречается
-     * TODO: может быть отказаться от этого поля в пользу termFrequencyMap из-за того,
-     * TODO: что в твитах редко бывает так, что какое-то слово в твит попадает несколько раз
      */
     private Map<String, Integer> numberOfDocumentsWithTermMap = new HashMap<>();
     /**
      * Матрица количества появлений каждого слова в каждом документе
      */
     private Table<String, String, Integer> termDocumentCoOccurrenceMatrix = HashBasedTable.create();
-//    private TextNormalizer normalizer = new TextNormalizer();
+
+    /**
+     * Вектор tf-idf для документов данного кластера
+     */
     private Map<String, Double> tfIdfMapForAllDocuments = new HashMap<>();
     /**
      * Флаг, показывающий был ли добавлен новый документ, если нет, то tfIdfMapForAllDocuments
@@ -69,15 +70,20 @@ public class TfIdf implements Serializable {
         String[] terms = normalizedText.split(" ");
         this.documentNumber++;
         globalDocumentNumber++;
+        HashSet<String> passedTerms = new HashSet<>();
         for (String term: terms) {
             updateFrequencyMapForTerm(this.termFrequencyMap, term);
-            if (this.termDocumentCoOccurrenceMatrix.contains(term, docName))
-                this.termDocumentCoOccurrenceMatrix.put(term, docName, this.termDocumentCoOccurrenceMatrix.get(term, docName) + 1);
-            else {
+//            if (this.termDocumentCoOccurrenceMatrix.contains(term, docName))
+//                this.termDocumentCoOccurrenceMatrix.put(term, docName, this.termDocumentCoOccurrenceMatrix.get(term, docName) + 1);
+//            else {
+            // если в этом документе уже был такой терм, то не увеличиваем количество документов, в которых он встречается
+            if (!passedTerms.contains(term)) {
                 updateFrequencyMapForTerm(this.numberOfDocumentsWithTermMap, term);
                 updateFrequencyMapForTerm(globalNumberOfDocumentsWithTermMap, term);
-                this.termDocumentCoOccurrenceMatrix.put(term, docName, 1);
+                passedTerms.add(term);
             }
+//                this.termDocumentCoOccurrenceMatrix.put(term, docName, 1);
+//            }
         }
         this.wasUpdated = true;
     }
@@ -217,6 +223,10 @@ public class TfIdf implements Serializable {
         return termFrequencyMap;
     }
 
+    public void setTermFrequencyMap(Map<String, Integer> termFrequencyMap) {
+        this.termFrequencyMap = termFrequencyMap;
+    }
+
     public void sortTermFrequencyMap() {
         termFrequencyMap = MapUtil.sortByValue(termFrequencyMap);
     }
@@ -239,5 +249,57 @@ public class TfIdf implements Serializable {
         for (String term : terms)
             tfIdf.put(term, 1.0);
         return tfIdf;
+    }
+
+    public static class MapDbSerializer implements Serializer<TfIdf>, Serializable {
+        @Override
+        public void serialize(DataOutput2 out, TfIdf value) throws IOException {
+            out.writeInt(value.documentNumber);
+            out.writeInt(value.termFrequencyMap.size());
+            for (Map.Entry<String, Integer> entry : value.termFrequencyMap.entrySet()) {
+                out.writeUTF(entry.getKey());
+                out.writeInt(entry.getValue());
+            }
+            out.writeInt(value.tfIdfMapForAllDocuments.size());
+            for (Map.Entry<String, Double> entry : value.tfIdfMapForAllDocuments.entrySet()) {
+                out.writeUTF(entry.getKey());
+                out.writeDouble(entry.getValue());
+            }
+            out.writeInt(value.numberOfDocumentsWithTermMap.size());
+            for (Map.Entry<String, Integer> entry : value.getNumberOfDocumentsWithTermMap().entrySet()) {
+                out.writeUTF(entry.getKey());
+                out.writeInt(entry.getValue());
+            }
+        }
+
+        @Override
+        public TfIdf deserialize(DataInput2 input, int available) throws IOException {
+            TfIdf tfIdf = new TfIdf();
+            tfIdf.documentNumber = input.readInt();
+            Integer termFrequencyMapSize = input.readInt();
+            for (int i = 0; i < termFrequencyMapSize; i++)
+                tfIdf.termFrequencyMap.put(input.readUTF(), input.readInt());
+            Integer tfIdfMapSize = input.readInt();
+            for (int i = 0; i < tfIdfMapSize; i++)
+                tfIdf.tfIdfMapForAllDocuments.put(input.readUTF(), input.readDouble());
+            Integer numberOfDocumentsWithTermMapSize = input.readInt();
+            for (int i = 0; i < numberOfDocumentsWithTermMapSize; i++)
+                tfIdf.numberOfDocumentsWithTermMap.put(input.readUTF(), input.readInt());
+            return tfIdf;
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TfIdf)) return false;
+
+        TfIdf tfIdf = (TfIdf) o;
+
+        if (documentNumber != tfIdf.documentNumber) return false;
+        if (!termFrequencyMap.equals(tfIdf.termFrequencyMap)) return false;
+        if (!tfIdfMapForAllDocuments.equals(tfIdf.tfIdfMapForAllDocuments)) return false;
+
+        return true;
     }
 }
