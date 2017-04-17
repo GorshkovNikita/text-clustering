@@ -11,6 +11,8 @@ import diploma.clustering.dbscan.points.SimplifiedDbscanStatusesCluster;
 import diploma.statistics.dao.MacroClusteringStatisticsDao;
 import diploma.statistics.dao.TweetDao;
 import org.mapdb.*;
+import twitter4j.HashtagEntity;
+import twitter4j.Status;
 import twitter4j.TwitterException;
 import twitter4j.TwitterObjectFactory;
 
@@ -18,10 +20,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Никита
@@ -61,10 +60,13 @@ public class MapDbDenStream extends DenStream {
         MacroClusteringStatisticsDao statisticsDao = new MacroClusteringStatisticsDao();
         TweetDao tweetDao = new TweetDao();
         int numberOfDocuments = 0;
-        MapDbDenStream denStream = new MapDbDenStream(10, 10, 3.0, -Math.log(3.0) / Math.log(2)/(double) 400, 0.4);
+        int numberOfDocumentsIgnored = 0;
+//        DenStream denStream = new DenStream(10, 20, 10.0, -Math.log(3.0) / Math.log(2)/(double) 400, 0.4);
+        DenStream denStream = new DenStream(10, 20, 10.0, 0.00000001, 0.4);
 
-        try (BufferedReader br = new BufferedReader(new FileReader("D:\\MSU\\diploma\\tweets-sets\\test-mapdb.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("D:\\MSU\\diploma\\tweets-sets\\2017-04-09-sport-events.txt"))) {
             String line = null;
+            int i = 0;
             do {
                 long start = System.currentTimeMillis();
                 line = br.readLine();
@@ -72,10 +74,21 @@ public class MapDbDenStream extends DenStream {
                     EnhancedStatus status = null;
                     try {
                         numberOfDocuments++;
+                        Status tweet = TwitterObjectFactory.createStatus(line);
 //                        tweetDao.saveTweet(TwitterObjectFactory.createStatus(line));
-                        status = new EnhancedStatus(TwitterObjectFactory.createStatus(line));
-                        if (!"".equals(status.getNormalizedText()) && status.getNormalizedText().split(" ").length >= 4)
-                            denStream.processNext(status);
+
+                        String userScreenName = tweet.getUser().getScreenName().toLowerCase();
+                        String retweetedUserScreenName = "";
+                        if (tweet.getRetweetedStatus() != null)
+                            retweetedUserScreenName = tweet.getRetweetedStatus().getUser().getScreenName().toLowerCase();
+                        List<String> ignoredUsers = Arrays.asList("petebetnow", "paddyspower1", "bingobestodds", "highrisklife1", "paddyspower2",
+                                "mufcfergie", "kim_feeney1", "roadtoprofituk", "olbg", "earnathomeuk");
+                        if (!(ignoredUsers.contains(userScreenName) || ignoredUsers.contains(retweetedUserScreenName))) {
+                            status = new EnhancedStatus(tweet);
+                            if (!"".equals(status.getNormalizedText()) && status.getNormalizedText().split(" ").length >= 4)
+                                denStream.processNext(status);
+                        }
+                        else numberOfDocumentsIgnored++;
                     } catch (TwitterException ignored) {}
                 }
 //                if (numberOfDocuments % 300 == 0) {
@@ -94,18 +107,20 @@ public class MapDbDenStream extends DenStream {
 //                    denStream.getPotentialMicroClustering().getClusters().clear();
 //                }
 
-                if (numberOfDocuments % 3000 == 0) {
+                if (numberOfDocuments % 10000 == 0) {
+//                if (false) {
                     List<DbscanStatusesCluster> incomingPoints = new ArrayList<>();
                     for (StatusesCluster cluster : denStream.getPotentialMicroClustering().getClusters()) {
                         // освобождаем чуток памяти
                         if (cluster.getTfIdf().getTermFrequencyMap().size() > 1000)
                             cluster.getTfIdf().setTermFrequencyMap(MapUtil.putFirstEntries(1000, MapUtil.sortByValue(cluster.getTfIdf().getTermFrequencyMap())));
-                        incomingPoints.add(new SimplifiedDbscanStatusesCluster(cluster));
+                        incomingPoints.add(new SimplifiedDbscanStatusesCluster(cluster, cluster.getMacroClusterId()));
                     }
 
-                    for (StatusesCluster cluster : denStream.getOutlierMicroClustering().getClusters())
+                    for (StatusesCluster cluster : denStream.getOutlierMicroClustering().getClusters()) {
                         if (cluster.getTfIdf().getTermFrequencyMap().size() > 1000)
                             cluster.getTfIdf().setTermFrequencyMap(MapUtil.putFirstEntries(1000, MapUtil.sortByValue(cluster.getTfIdf().getTermFrequencyMap())));
+                    }
 
                     // удаляем старые микрокластера
 //                    List<DbscanPoint> removalList = new ArrayList<>();
@@ -123,13 +138,17 @@ public class MapDbDenStream extends DenStream {
                     Clustering<Cluster<StatusesCluster>, StatusesCluster> macroClustering = new Clustering<>();
                     for (DbscanPoint point: incomingPoints) { //statefulDbscan.getAllPoints()) {
                         if (point.isAssigned()) {
+                            StatusesCluster statusesCluster = ((SimplifiedDbscanStatusesCluster) point).getStatusesCluster();
                             if (macroClustering.findClusterById(point.getClusterId()) == null) {
+//                                if (statusesCluster.getMacroClusterId() == 0)
+                                statusesCluster.setMacroClusterId(point.getClusterId());
                                 Cluster<StatusesCluster> cluster = new Cluster<>(point.getClusterId(), denStream.lambda);
-                                cluster.assignPoint(((SimplifiedDbscanStatusesCluster)point).getStatusesCluster());
+                                cluster.assignPoint(statusesCluster);
                                 macroClustering.addCluster(cluster);
                             } else {
                                 Cluster<StatusesCluster> cluster = macroClustering.findClusterById(point.getClusterId());
-                                cluster.assignPoint(((SimplifiedDbscanStatusesCluster)point).getStatusesCluster());
+                                statusesCluster.setMacroClusterId(point.getClusterId());
+                                cluster.assignPoint(statusesCluster);
                             }
                         }
                     }
@@ -140,6 +159,12 @@ public class MapDbDenStream extends DenStream {
                     for (Cluster<StatusesCluster> cluster : macroClustering.getClusters())
                         statisticsDao.saveStatistics(denStream.getClusterStatistics(cluster, time));
 //                    }
+
+                    for (StatusesCluster cluster : denStream.getPotentialMicroClustering().getClusters())
+                        cluster.resetProcessedPerTimeUnit();
+
+                    for (StatusesCluster cluster : denStream.getOutlierMicroClustering().getClusters())
+                        cluster.resetProcessedPerTimeUnit();
                 }
 //                try {
 //                    Thread.sleep(100 - (System.currentTimeMillis() - start));
@@ -149,9 +174,9 @@ public class MapDbDenStream extends DenStream {
 //                    System.out.println("Не успеваю!");
 //                }
             } while (line != null);
-            denStream.mapDbOutlierMicroClustering.set(denStream.outlierMicroClustering);
-            denStream.mapDbPotentialMicroClustering.set(denStream.potentialMicroClustering);
-            denStream.db.close();
+//            denStream.mapDbOutlierMicroClustering.set(denStream.outlierMicroClustering);
+//            denStream.mapDbPotentialMicroClustering.set(denStream.potentialMicroClustering);
+//            denStream.db.close();
             br.close();
         }
         catch (IOException | IllegalArgumentException ex) {

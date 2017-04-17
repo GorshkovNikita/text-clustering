@@ -48,4 +48,5 @@ public interface DbscanPoint {
      */
     int getClusterId();
     void setClusterId(int clusterId);
+    int getLastAssignedClusterId();
 }

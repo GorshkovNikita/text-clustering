@@ -1,25 +1,19 @@
 package diploma.clustering;
 
 import diploma.clustering.clusters.Cluster;
-import diploma.clustering.clusters.Clustering;
 import diploma.clustering.clusters.StatusesCluster;
 import diploma.clustering.clusters.StatusesClustering;
 import diploma.clustering.dbscan.Dbscan;
-import diploma.clustering.dbscan.points.DbscanPoint;
-import diploma.clustering.dbscan.points.DbscanStatusesCluster;
-import diploma.clustering.dbscan.points.SimplifiedDbscanStatusesCluster;
 import diploma.clustering.dbscan.points.StatusDbscanPoint;
 import diploma.statistics.MacroClusteringStatistics;
-import diploma.statistics.dao.MacroClusteringStatisticsDao;
-import diploma.statistics.dao.TweetDao;
-import twitter4j.TwitterException;
-import twitter4j.TwitterObjectFactory;
+import diploma.statistics.RemovedMicroClusterStatistics;
+import diploma.statistics.dao.RemovedMicroClusterDao;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Никита
@@ -42,6 +36,7 @@ public class DenStream {
     private int statisticsCounter = 0;
     protected StatusesClustering outlierMicroClustering;
     protected StatusesClustering potentialMicroClustering;
+    protected RemovedMicroClusterDao removedMicroClusterDao;
     int executeCounter = 0;
 
 //    public DenStream() {}
@@ -52,10 +47,11 @@ public class DenStream {
         this.beta = beta;
         this.lambda = lambda;
         this.initSimilarity = initSimilarity;
-        outlierMicroClustering = new StatusesClustering(initSimilarity);
-        potentialMicroClustering = new StatusesClustering(initSimilarity);
+        this.outlierMicroClustering = new StatusesClustering(initSimilarity);
+        this.potentialMicroClustering = new StatusesClustering(initSimilarity);
         // для значений, описанных выше это равно 202028
-        tp = Math.round(1 / lambda * Math.log((beta * mu) / (beta * mu - 1))) + 1;
+        this.tp = Math.round(1 / lambda * Math.log((beta * mu) / (beta * mu - 1))) + 1;
+        this.removedMicroClusterDao = new RemovedMicroClusterDao();
     }
 
     public StatusesClustering getPotentialMicroClustering() {
@@ -107,7 +103,8 @@ public class DenStream {
                 if (withSubClustering) newCluster.createSubClustering(initSimilarity, mu, beta);
             }
         }
-        if (System.currentTimeMillis() % tp == 0) {
+//        if (System.currentTimeMillis() % tp == 0) {
+        if (numberOfProcessedUnits % 10000 == 0) {
             ArrayList<StatusesCluster> removalList = new ArrayList<>();
             for (StatusesCluster c : getPotentialMicroClustering().getClusters())
                 if (c.getWeight() < beta * mu)
@@ -131,8 +128,10 @@ public class DenStream {
                     for (StatusesCluster subCluster : subClustersRemovalList)
                         c.getOutlierSubClustering().getClusters().remove(subCluster);
                 }
-            for (StatusesCluster c : removalList)
+            for (StatusesCluster c : removalList) {
+                removedMicroClusterDao.saveStatistics(getRemovedMicroClusterStatistics(c, (byte) 1));
                 getPotentialMicroClustering().getClusters().remove(c);
+            }
 
             removalList.clear();
             for (StatusesCluster c : getOutlierMicroClustering().getClusters()) {
@@ -143,8 +142,10 @@ public class DenStream {
                 if (c.getWeight() < xsi)
                     removalList.add(c);
             }
-            for (StatusesCluster c : removalList)
+            for (StatusesCluster c : removalList) {
+                removedMicroClusterDao.saveStatistics(getRemovedMicroClusterStatistics(c, (byte) 0));
                 getOutlierMicroClustering().getClusters().remove(c);
+            }
         }
     }
 
@@ -170,9 +171,11 @@ public class DenStream {
     protected MacroClusteringStatistics getClusterStatistics(Cluster<StatusesCluster> cluster, Timestamp time) {
         MacroClusteringStatistics statistics = new MacroClusteringStatistics();
         int totalNumberOfDocuments = 0;
+        int totalProcessedPerTimeUnit = 0;
         Map<String, Integer> topTenTerms = new HashMap<>();
         for (StatusesCluster statusesCluster: cluster.getAssignedPoints()) {
             totalNumberOfDocuments += statusesCluster.getTfIdf().getDocumentNumber();
+            totalProcessedPerTimeUnit += statusesCluster.getProcessedPerTimeUnit();
             for (Map.Entry<String, Integer> entry: statusesCluster.getTfIdf().getTermFrequencyMap().entrySet())
                 topTenTerms.merge(entry.getKey(), entry.getValue(), (num1, num2) -> num1 + num2);
         }
@@ -183,6 +186,18 @@ public class DenStream {
         statistics.setNumberOfDocuments(totalNumberOfDocuments);
         statistics.setTopTerms(topTenTerms);
         statistics.setAbsorbedClusterIds(cluster.getAbsorbedClusterIds());
+        statistics.setTotalProcessedPerTimeUnit(totalProcessedPerTimeUnit);
+        return statistics;
+    }
+
+    protected RemovedMicroClusterStatistics getRemovedMicroClusterStatistics(StatusesCluster cluster, byte isPotential) {
+        RemovedMicroClusterStatistics statistics = new RemovedMicroClusterStatistics();
+        statistics.setCreationTime(cluster.getCreationTime());
+        statistics.setLastUpdateTIme(cluster.getLastUpdateTime());
+        statistics.setNumberOfDocuments(cluster.getSize());
+        statistics.setIsPotential(isPotential);
+        Map<String, Integer> sortedTopTen = MapUtil.putFirstEntries(10, MapUtil.sortByValue(cluster.getTfIdf().getTermFrequencyMap()));
+        statistics.setTopWords(sortedTopTen.toString());
         return statistics;
     }
 

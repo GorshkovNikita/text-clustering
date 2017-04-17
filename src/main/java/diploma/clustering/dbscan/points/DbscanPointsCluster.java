@@ -53,4 +53,9 @@ public class DbscanPointsCluster extends PointsCluster implements DbscanPoint, S
         // TODO: Также, возможно, нужно удалять все из TfIdf, кроме tfIdfMapForAllDocuments
         this.clusterId = clusterId;
     }
+
+    @Override
+    public int getLastAssignedClusterId() {
+        return 0;
+    }
 }

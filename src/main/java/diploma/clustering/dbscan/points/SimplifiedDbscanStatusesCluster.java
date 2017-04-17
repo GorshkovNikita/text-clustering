@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 public class SimplifiedDbscanStatusesCluster extends DbscanStatusesCluster {
     public SimplifiedDbscanStatusesCluster() {}
 
-    public SimplifiedDbscanStatusesCluster(StatusesCluster statusesCluster) {
-        super(statusesCluster);
+    public SimplifiedDbscanStatusesCluster(StatusesCluster statusesCluster, int lastAssignedClusterId) {
+        super(statusesCluster, lastAssignedClusterId);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class SimplifiedDbscanStatusesCluster extends DbscanStatusesCluster {
         int numberOfCommonTerms = 0;
         for (String term : firstClusterTermFrequencyMap.keySet()) {
             if (secondClusterTermFrequencyMap.containsKey(term)) numberOfCommonTerms++;
-            if (numberOfCommonTerms >= 5) return true;
+            if (numberOfCommonTerms >= 4) return true;
         }
         return false;
     }

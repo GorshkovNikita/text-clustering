@@ -4,10 +4,7 @@ import diploma.clustering.clusters.Cluster;
 import diploma.clustering.clusters.Clustering;
 import diploma.clustering.dbscan.points.DbscanPoint;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Алгоритм плотностной кластеризации DBSCAN
@@ -20,6 +17,7 @@ public class Dbscan {
     protected double eps;
 //    protected K clustering;
     protected int lastClusterId = 1;
+    protected SortedSet<Integer> usedIds = new TreeSet<>();
 
     public Dbscan() {}
 
@@ -42,13 +40,14 @@ public class Dbscan {
                 List<DbscanPoint> neighbours = (List<DbscanPoint>) point.getNeighbours(points, eps);
 //                Cluster newCluster = clustering.createNewCluster();
                 if (neighbours.size() >= minNeighboursCount) {
-                    point.setClusterId(lastClusterId);
+                    int clusterId = point.getLastAssignedClusterId() != 0 ? point.getLastAssignedClusterId() : getNextUnUsedId();
+                    point.setClusterId(clusterId);
 //                    newCluster.assignPoint(point);
                     while (!neighbours.isEmpty()) {
                         DbscanPoint lastNeighbour = neighbours.remove(neighbours.size() - 1);
                         if (!lastNeighbour.isAssigned()) {
 //                            newCluster.assignPoint(lastNeighbour);
-                            lastNeighbour.setClusterId(lastClusterId);
+                            lastNeighbour.setClusterId(clusterId);
                             List<DbscanPoint> neighboursOfNeighbour = (List<DbscanPoint>) lastNeighbour.getNeighbours(points, eps);
                             if (neighboursOfNeighbour.size() >= minNeighboursCount) {
                                 for (DbscanPoint neighbourOfNeighbour: neighboursOfNeighbour) {
@@ -60,10 +59,21 @@ public class Dbscan {
                         }
                     }
 //                    clustering.addCluster(newCluster);
-                    lastClusterId++;
+//                    lastClusterId++;
                 } else point.setNoise();
             }
         }
+    }
+
+    private int getNextUnUsedId() {
+        int newClusterId;
+        try {
+            newClusterId = usedIds.last() + 1;
+        } catch (NoSuchElementException ex) {
+            newClusterId = 1;
+        }
+        usedIds.add(newClusterId);
+        return newClusterId;
     }
 
 //    public K getClustering() {

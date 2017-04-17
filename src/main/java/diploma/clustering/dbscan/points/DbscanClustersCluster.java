@@ -41,4 +41,9 @@ public class DbscanClustersCluster extends ClustersCluster implements DbscanPoin
     public void setClusterId(int clusterId) {
         this.clusterId = clusterId;
     }
+
+    @Override
+    public int getLastAssignedClusterId() {
+        return 0;
+    }
 }

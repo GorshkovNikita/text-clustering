@@ -14,6 +14,7 @@ import java.util.Map;
  */
 public class DbscanStatusesCluster implements DbscanPoint, Serializable {
     private int clusterId = DbscanPoint.UNVISITED;
+    private int lastAssignedClusterId = 0;
     private StatusesCluster statusesCluster;
 
     public DbscanStatusesCluster() {}
@@ -23,8 +24,9 @@ public class DbscanStatusesCluster implements DbscanPoint, Serializable {
 //        this.clusterId = clusterId1;
 //    }
 
-    public DbscanStatusesCluster(StatusesCluster statusesCluster) {
+    public DbscanStatusesCluster(StatusesCluster statusesCluster, int lastAssignedClusterId) {
         this.statusesCluster = statusesCluster;
+        this.lastAssignedClusterId = lastAssignedClusterId;
     }
 
     /**
@@ -88,7 +90,12 @@ public class DbscanStatusesCluster implements DbscanPoint, Serializable {
         this.clusterId = clusterId;
     }
 
-//    /**
+    @Override
+    public int getLastAssignedClusterId() {
+        return lastAssignedClusterId;
+    }
+
+    //    /**
 //     * Фильтрация вектора tf-idf часто встречающимися термами.
 //     * @param tfIdfVector - фильтруемый вектор tf-idf
 //     * @param frequentTerms - часто встречающиеся термы

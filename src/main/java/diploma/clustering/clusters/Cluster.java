@@ -23,6 +23,7 @@ public class Cluster<T> implements Serializable {
     protected long lastUpdateTime;
     protected double lambda;
     protected int size;
+    protected int processedPerTimeUnit = 0;
 
     /**
      * Идентификаторы кластеров, которые были слиты с данным кластером
@@ -49,6 +50,7 @@ public class Cluster<T> implements Serializable {
         // можно переопределить в подклассе, если необходимо
         assignedPoints.add(point);
         size++;
+        processedPerTimeUnit++;
         this.lastUpdateTime = System.currentTimeMillis();
     }
 
@@ -90,6 +92,14 @@ public class Cluster<T> implements Serializable {
 
     public int getSize() {
         return size;
+    }
+
+    public void resetProcessedPerTimeUnit() {
+        this.processedPerTimeUnit = 0;
+    }
+
+    public int getProcessedPerTimeUnit() {
+        return processedPerTimeUnit;
     }
 
     @Override

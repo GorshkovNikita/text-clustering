@@ -1,10 +1,13 @@
 package diploma.clustering.clusters;
 
+import diploma.clustering.CosineSimilarity;
 import diploma.clustering.EnhancedStatus;
+import diploma.clustering.TextNormalizer;
 import diploma.clustering.tfidf.TfIdf;
 import org.mapdb.DataInput2;
 import org.mapdb.DataOutput2;
 import org.mapdb.Serializer;
+import twitter4j.Status;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -17,6 +20,8 @@ public class StatusesCluster extends Cluster<EnhancedStatus> implements Serializ
     private TfIdf tfIdf;
     private StatusesClustering potentialSubClustering;
     private StatusesClustering outlierSubClustering;
+    private EnhancedStatus mostRelevantTweet;
+    private int macroClusterId = 0;
 
     // Нужны только если есть саб-кластеризация
     private int mu;
@@ -31,8 +36,19 @@ public class StatusesCluster extends Cluster<EnhancedStatus> implements Serializ
     public void assignPoint(EnhancedStatus point) {
 //        super.assignPoint(point);
         size++;
+        processedPerTimeUnit++;
         this.lastUpdateTime = System.currentTimeMillis();
         tfIdf.updateForNewDocument(Long.toString(point.getStatus().getId()), point.getNormalizedText());
+        if (this.mostRelevantTweet != null) {
+            if (CosineSimilarity.cosineSimilarity(
+                    tfIdf.getTfIdfForSpecificDocumentWithContent(point.getNormalizedText()),
+                    tfIdf.getTfIdfForAllDocuments()) >
+                CosineSimilarity.cosineSimilarity(
+                    tfIdf.getTfIdfForSpecificDocumentWithContent(this.mostRelevantTweet.getNormalizedText()),
+                    tfIdf.getTfIdfForAllDocuments()))
+                this.mostRelevantTweet = point;
+        }
+        else this.mostRelevantTweet = point;
     }
 
     /**
@@ -77,6 +93,14 @@ public class StatusesCluster extends Cluster<EnhancedStatus> implements Serializ
 
     public StatusesClustering getPotentialSubClustering() {
         return potentialSubClustering;
+    }
+
+    public int getMacroClusterId() {
+        return macroClusterId;
+    }
+
+    public void setMacroClusterId(int macroClusterId) {
+        this.macroClusterId = macroClusterId;
     }
 
     public static class MapDbSerializer implements Serializer<StatusesCluster>, Serializable {

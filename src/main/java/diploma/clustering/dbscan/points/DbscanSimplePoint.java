@@ -46,6 +46,11 @@ public class DbscanSimplePoint extends Point implements DbscanPoint {
     }
 
     @Override
+    public int getLastAssignedClusterId() {
+        return 0;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof DbscanSimplePoint)) return false;

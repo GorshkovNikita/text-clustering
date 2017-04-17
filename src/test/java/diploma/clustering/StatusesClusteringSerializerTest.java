@@ -6,7 +6,6 @@ import diploma.clustering.tfidf.TfIdf;
 import org.junit.Test;
 import org.mapdb.DataInput2;
 import org.mapdb.DataOutput2;
-import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.lang.reflect.Field;

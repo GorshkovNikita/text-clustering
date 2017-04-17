@@ -52,9 +52,12 @@ public class TextNormalizer {
             "north", "south", "west","east","city","title","#news","national","daily","event","half","talk","park","line","center","loss","recap","town","ride","water","level","review","area",
             "online","sale","business","style","change",
 
-            "weightlifting", "sports", "sport", "football", "cycling", "snooker", "tennis", "hockey", "skating", "superbike",
+            "weightlifting", "sports", "sport", "football", "cycling", "snooker", "tennis", "hockey", "skating", "superbike","basketball", "golf","cricket","skiing",
+            "baseball", "volleyball", "boxing", "rugby", "athletics", "cricket", "soccer", "formula1",
             "#sports", "#sport", "#football", "#cycling", "#hockey", "#tennis","match","league","coach","goal","#sportsnews","playoff",
-            "injury","road","result","report","luck","preview","performance","level","manager","shot","spot","pitch","#openingday","opener","practice","leader"
+            "injury","road","result","report","luck","preview","performance","level","manager","shot","spot","pitch","#openingday","opener","practice","leader","star","program",
+            "school","college", "winner","stream","masters","championship","family","score","athlete","tournament","victory","chance","black","start","history","media","action","series","visit","university",
+            "power","deal","premier","blog","competition","student","book","trophy","break","fight","centre","espn","table"
     ));
 
 

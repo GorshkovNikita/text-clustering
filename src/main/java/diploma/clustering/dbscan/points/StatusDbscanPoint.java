@@ -51,6 +51,11 @@ public class StatusDbscanPoint implements DbscanPoint {
         this.clusterId = clusterId;
     }
 
+    @Override
+    public int getLastAssignedClusterId() {
+        return 0;
+    }
+
     public EnhancedStatus getStatus() {
         return status;
     }

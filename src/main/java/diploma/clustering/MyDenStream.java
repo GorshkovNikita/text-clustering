@@ -89,7 +89,7 @@ public class MyDenStream {
                 if (timestamp % 10000 == 0) {
                     List<DbscanStatusesCluster> list = new ArrayList<>();
                     for (StatusesCluster cluster : potentialMicroClustering.getClusters()) {
-                        list.add(new DbscanStatusesCluster(cluster));
+                        list.add(new DbscanStatusesCluster(cluster, 0));
                     }
                     dbscan.run(list);
                     Clustering<Cluster<StatusesCluster>, StatusesCluster> macroClustering = new Clustering<>();
