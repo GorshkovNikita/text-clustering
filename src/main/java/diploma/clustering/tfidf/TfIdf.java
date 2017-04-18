@@ -224,6 +224,8 @@ public class TfIdf implements Serializable {
     }
 
     public void setTermFrequencyMap(Map<String, Integer> termFrequencyMap) {
+        // необходимо, чтобы при подсчете tfIdf для кластера, использовалась последняя карта частот
+        this.wasUpdated = true;
         this.termFrequencyMap = termFrequencyMap;
     }
 

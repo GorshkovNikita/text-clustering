@@ -2,10 +2,12 @@ package diploma.clustering;
 
 import twitter4j.Status;
 
+import java.io.Serializable;
+
 /**
  * @author Никита
  */
-public class EnhancedStatus {
+public class EnhancedStatus implements Serializable {
     private Status status;
     private String normalizedText;
 
