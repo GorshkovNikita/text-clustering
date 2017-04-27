@@ -104,6 +104,8 @@ public class DenStream {
             }
         }
 //        if (System.currentTimeMillis() % tp == 0) {
+        // TODO: здесь какой-то косяк, очень долго выполняется
+        // TODO: походу был из-за того, что я бд не включил, надо проверить
         if (numberOfProcessedUnits % 10000 == 0) {
             ArrayList<StatusesCluster> removalList = new ArrayList<>();
             for (StatusesCluster c : getPotentialMicroClustering().getClusters())
@@ -129,7 +131,7 @@ public class DenStream {
                         c.getOutlierSubClustering().getClusters().remove(subCluster);
                 }
             for (StatusesCluster c : removalList) {
-                removedMicroClusterDao.saveStatistics(getRemovedMicroClusterStatistics(c, (byte) 1));
+//                removedMicroClusterDao.saveStatistics(getRemovedMicroClusterStatistics(c, (byte) 1));
                 getPotentialMicroClustering().getClusters().remove(c);
             }
 
@@ -143,7 +145,7 @@ public class DenStream {
                     removalList.add(c);
             }
             for (StatusesCluster c : removalList) {
-                removedMicroClusterDao.saveStatistics(getRemovedMicroClusterStatistics(c, (byte) 0));
+//                removedMicroClusterDao.saveStatistics(getRemovedMicroClusterStatistics(c, (byte) 0));
                 getOutlierMicroClustering().getClusters().remove(c);
             }
         }

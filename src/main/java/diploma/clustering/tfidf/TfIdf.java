@@ -92,7 +92,7 @@ public class TfIdf implements Serializable {
         return Math.log10((double) this.documentNumber / (double) this.numberOfDocumentsWithTermMap.get(term));
     }
 
-    public static Double getGlobalTermIdf(String term) {
+    public synchronized static Double getGlobalTermIdf(String term) {
         return Math.log10((double) globalDocumentNumber / (double) globalNumberOfDocumentsWithTermMap.get(term));
     }
 
