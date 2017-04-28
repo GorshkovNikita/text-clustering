@@ -1,11 +1,12 @@
 package diploma.clustering;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 /**
  * @author Никита
  */
-public class Point {
+public class Point implements Serializable {
     private long id;
     private String tweetText;
     private Double[] coordinatesVector;
