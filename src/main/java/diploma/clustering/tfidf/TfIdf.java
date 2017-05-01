@@ -33,6 +33,12 @@ public class TfIdf implements Serializable {
     private int documentNumber = 0;
 
     /**
+     * Количество термов, связанных с конкретным объектов TfIdf, то есть
+     * это количество слов в кластере
+     */
+    private int termNumber = 0;
+
+    /**
      * Количество появлений каждого слова во всем корпусе текущего кластера
      */
     private Map<String, Integer> termFrequencyMap = new HashMap<>();
@@ -69,6 +75,7 @@ public class TfIdf implements Serializable {
 //        String normalizedText = this.normalizer.normalizeToString(text);
         String[] terms = normalizedText.split(" ");
         this.documentNumber++;
+        this.termNumber++;
         globalDocumentNumber++;
         HashSet<String> passedTerms = new HashSet<>();
         for (String term: terms) {
@@ -123,7 +130,8 @@ public class TfIdf implements Serializable {
             this.tfIdfMapForAllDocuments.clear();
             for (Map.Entry<String, Integer> term : this.termFrequencyMap.entrySet()) {
                 // TODO: в online-denstream в качестве tf используется только количество вхождений
-                double tf = (double) term.getValue() / (double) this.termFrequencyMap.size();
+                // было неверно, тк это не общее количество слов, а количество уникальных слов
+                double tf = (double) term.getValue() / (double) this.termNumber; // this.termFrequencyMap.size();
                 // TODO: global or not?
                 this.tfIdfMapForAllDocuments.put(term.getKey(), tf * getGlobalTermIdf(term.getKey()));
             }
@@ -257,7 +265,8 @@ public class TfIdf implements Serializable {
         @Override
         public void serialize(DataOutput2 out, TfIdf value) throws IOException {
             out.writeInt(value.documentNumber);
-            out.writeInt(value.termFrequencyMap.size());
+            out.writeInt(value.termNumber);
+//            out.writeInt(value.termFrequencyMap.size());
             for (Map.Entry<String, Integer> entry : value.termFrequencyMap.entrySet()) {
                 out.writeUTF(entry.getKey());
                 out.writeInt(entry.getValue());
