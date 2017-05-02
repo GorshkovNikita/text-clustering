@@ -1,11 +1,5 @@
 package diploma.clustering.clusters;
 
-import diploma.clustering.tfidf.TfIdf;
-import org.mapdb.DataInput2;
-import org.mapdb.DataOutput2;
-import org.mapdb.Serializer;
-
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,9 +66,10 @@ public class Cluster<T> implements Serializable {
 
     /**
      * Вес кластера, уменьшающийся со временем, если он давно не обновлялся
+     * TODO: сделать как-то так, чтобы вес сохранялся после уменьшения, а потом проверить как это влияет
      */
-    public double getWeight() {
-        long dt = System.currentTimeMillis() - lastUpdateTime;
+    public double getWeight(long currentTimestamp) {
+        long dt = currentTimestamp - lastUpdateTime;
         return (size * Math.pow(2, -lambda * dt));
     }
 

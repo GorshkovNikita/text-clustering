@@ -39,7 +39,7 @@ public class TextNormalizer {
             "whereafter", "whereas", "whereby", "wherein", "whereupon", "wherever", "whether", "which", "while", "whither", "who", "whoever", "whole", "whom", "whose",
             "why", "will", "with", "within", "without", "would", "yet", "you", "your", "yours", "yourself", "yourselves", "the","time","today","people","person",
             "year","way","day", "thing","man","world","life","hand","part","child","eye","woman","place","work","week","case","point","government","company",
-            "number", "group","problem","fact","follow","follower","love",
+            "number", "group","problem","fact","follow","follower","love","blue","coffee",
 
             "thank", "thanks", "girl", "click", "shit", "bitch", "friend", "game", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday", "weekend",
             "home", "fuck", "season", "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december",
@@ -54,10 +54,11 @@ public class TextNormalizer {
 
             "weightlifting", "sports", "sport", "football", "cycling", "snooker", "tennis", "hockey", "skating", "superbike","basketball", "golf","cricket","skiing",
             "baseball", "volleyball", "boxing", "rugby", "athletics", "cricket", "soccer", "formula1",
-            "#sports", "#sport", "#football", "#cycling", "#hockey", "#tennis","match","league","coach","goal","#sportsnews","playoff",
+            "#sports", "#sport", "#football", "#cycling", "#hockey", "#tennis", "#soccer", "match","league","coach","goal","#sportsnews","playoff",
             "injury","road","result","report","luck","preview","performance","level","manager","shot","spot","pitch","#openingday","opener","practice","leader","star","program",
             "school","college", "winner","stream","masters","championship","family","score","athlete","tournament","victory","chance","black","start","history","media","action","series","visit","university",
-            "power","deal","premier","blog","competition","student","book","trophy","break","fight","centre","espn","table"
+            "power","deal","premier","blog","competition","student","book","trophy","break","fight","centre","espn","table","round","edition","class","card","reminder",
+            "freshman","respect"
     ));
 
 

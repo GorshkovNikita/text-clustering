@@ -2,16 +2,13 @@ package diploma.clustering.clusters;
 
 import diploma.clustering.CosineSimilarity;
 import diploma.clustering.EnhancedStatus;
-import diploma.clustering.TextNormalizer;
 import diploma.clustering.tfidf.TfIdf;
 import org.mapdb.DataInput2;
 import org.mapdb.DataOutput2;
 import org.mapdb.Serializer;
-import twitter4j.Status;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  * @author Никита
@@ -37,7 +34,8 @@ public class StatusesCluster extends Cluster<EnhancedStatus> implements Serializ
 //        super.assignPoint(point);
         size++;
         processedPerTimeUnit++;
-        this.lastUpdateTime = System.currentTimeMillis();
+//        this.lastUpdateTime = System.currentTimeMillis();
+        this.lastUpdateTime = point.getCreationTimestamp();
         tfIdf.updateForNewDocument(Long.toString(point.getStatus().getId()), point.getNormalizedText());
         if (this.mostRelevantTweet != null) {
             if (CosineSimilarity.cosineSimilarity(
@@ -66,7 +64,7 @@ public class StatusesCluster extends Cluster<EnhancedStatus> implements Serializ
             }
             else {
                 nearestSubCluster.assignPoint(point);
-                if (nearestSubCluster.getWeight() > beta * mu) {
+                if (nearestSubCluster.getWeight(point.getCreationTimestamp()) > beta * mu) {
                     this.outlierSubClustering.getClusters().remove(nearestSubCluster);
                     nearestSubCluster.setId(this.potentialSubClustering.getLastClusterId() + 1);
                     this.potentialSubClustering.addCluster(nearestSubCluster);

@@ -12,6 +12,7 @@ public class EnhancedStatus implements Serializable {
     private Status status;
     private String normalizedText;
     private Date creationDate;
+    private long creationTimestamp;
 
     public EnhancedStatus(Status status) {
         this.status = status;
@@ -29,5 +30,13 @@ public class EnhancedStatus implements Serializable {
 
     public Date getCreationDate() {
         return creationDate;
+    }
+
+    public void setCreationTimestamp(long creationTimestamp) {
+        this.creationTimestamp = creationTimestamp;
+    }
+
+    public long getCreationTimestamp() {
+        return creationTimestamp;
     }
 }

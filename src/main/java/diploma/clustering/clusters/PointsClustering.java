@@ -1,7 +1,5 @@
 package diploma.clustering.clusters;
 
-import diploma.clustering.CosineSimilarity;
-import diploma.clustering.MapUtil;
 import diploma.clustering.VectorOperations;
 import diploma.clustering.dbscan.points.DbscanPointsCluster;
 import diploma.clustering.dbscan.points.DbscanSimplePoint;

@@ -265,8 +265,8 @@ public class TfIdf implements Serializable {
         @Override
         public void serialize(DataOutput2 out, TfIdf value) throws IOException {
             out.writeInt(value.documentNumber);
-            out.writeInt(value.termNumber);
-//            out.writeInt(value.termFrequencyMap.size());
+//            out.writeInt(value.termNumber);
+            out.writeInt(value.termFrequencyMap.size());
             for (Map.Entry<String, Integer> entry : value.termFrequencyMap.entrySet()) {
                 out.writeUTF(entry.getKey());
                 out.writeInt(entry.getValue());
