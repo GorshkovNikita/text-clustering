@@ -58,7 +58,7 @@ public class TextNormalizer {
             "injury","road","result","report","luck","preview","performance","level","manager","shot","spot","pitch","#openingday","opener","practice","leader","star","program",
             "school","college", "winner","stream","masters","championship","family","score","athlete","tournament","victory","chance","black","start","history","media","action","series","visit","university",
             "power","deal","premier","blog","competition","student","book","trophy","break","fight","centre","espn","table","round","edition","class","card","reminder",
-            "freshman","respect"
+            "freshman","respect", "race"
     ));
 
 
@@ -85,6 +85,7 @@ public class TextNormalizer {
 
     public String normalizeToString(String text) {
         String resultString = "";
+        text.replace("-", " ");
         Annotation document = normalize(text);
         List<CoreLabel> tokens = document.get(CoreAnnotations.TokensAnnotation.class);
 

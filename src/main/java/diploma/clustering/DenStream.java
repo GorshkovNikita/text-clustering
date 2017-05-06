@@ -163,6 +163,9 @@ public class DenStream {
                 getOutlierMicroClustering().getClusters().remove(c);
             }
         }
+        if (numberOfProcessedUnits == 107000) {
+            System.out.println("50000 tweets processed");
+        }
     }
 
     private void initialDbscan() {

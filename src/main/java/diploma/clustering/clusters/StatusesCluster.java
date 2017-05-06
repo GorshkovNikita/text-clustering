@@ -101,6 +101,10 @@ public class StatusesCluster extends Cluster<EnhancedStatus> implements Serializ
         this.macroClusterId = macroClusterId;
     }
 
+    public EnhancedStatus getMostRelevantTweet() {
+        return mostRelevantTweet;
+    }
+
     public static class MapDbSerializer implements Serializer<StatusesCluster>, Serializable {
         @Override
         public void serialize(DataOutput2 out, StatusesCluster value) throws IOException {
