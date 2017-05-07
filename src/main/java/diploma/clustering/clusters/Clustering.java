@@ -46,6 +46,11 @@ public class Clustering<C extends Cluster<T>, T> implements Serializable {
         lastClusterId = cluster.getId();
     }
 
+    public void addCluster(C cluster, long creationTime) {
+        addCluster(cluster);
+        cluster.setCreationTime(creationTime);
+    }
+
     public C findClusterById(int clusterId) {
         for(C cluster: clusters) {
             if (cluster.getId() == clusterId)

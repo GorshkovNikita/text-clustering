@@ -1,5 +1,7 @@
 package diploma.clustering.clusters;
 
+import org.apache.commons.collections4.queue.CircularFifoQueue;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +17,12 @@ public class Cluster<T> implements Serializable {
     protected int id;
     protected long creationTime;
     protected long lastUpdateTime;
+    protected long actualCreationTime;
+    protected long actualUpdateTime;
     protected double lambda;
     protected int size;
     protected int processedPerTimeUnit = 0;
+    private CircularFifoQueue<Integer> ratePerUnitQueue;
 
     /**
      * Идентификаторы кластеров, которые были слиты с данным кластером
@@ -27,12 +32,16 @@ public class Cluster<T> implements Serializable {
     public Cluster() {
 //        this.assignedPoints = new ArrayList<>();
 //        this.creationTime = System.currentTimeMillis();
+        this.actualCreationTime = System.currentTimeMillis();
+        this.ratePerUnitQueue = new CircularFifoQueue<>(10);
     }
 
     public Cluster(int id, double lambda) {
 //        this.assignedPoints = new ArrayList<>();
         this.lambda = lambda;
         this.id = id;
+        this.actualCreationTime = System.currentTimeMillis();
+        this.ratePerUnitQueue = new CircularFifoQueue<>(10);
     }
 
     public Cluster(List<T> points) {
@@ -46,6 +55,7 @@ public class Cluster<T> implements Serializable {
         size++;
         processedPerTimeUnit++;
         this.lastUpdateTime = System.currentTimeMillis();
+        this.actualUpdateTime = System.currentTimeMillis();
     }
 
     public List<T> getAssignedPoints() {
@@ -90,11 +100,31 @@ public class Cluster<T> implements Serializable {
     }
 
     public void resetProcessedPerTimeUnit() {
+        ratePerUnitQueue.add(this.processedPerTimeUnit);
         this.processedPerTimeUnit = 0;
+    }
+
+    public double getMeanRatePerUnit() {
+        int sum = 0;
+        for (int i = 0; i < ratePerUnitQueue.size(); i++)
+            sum += ratePerUnitQueue.get(i);
+        return sum / (double) ratePerUnitQueue.size();
+    }
+
+    public CircularFifoQueue<Integer> getRatePerUnitQueue() {
+        return ratePerUnitQueue;
     }
 
     public int getProcessedPerTimeUnit() {
         return processedPerTimeUnit;
+    }
+
+    public long getActualCreationTime() {
+        return actualCreationTime;
+    }
+
+    public long getActualUpdateTime() {
+        return actualUpdateTime;
     }
 
     @Override

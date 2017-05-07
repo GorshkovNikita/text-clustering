@@ -106,24 +106,25 @@ public class DenStream {
                         /* Меняем id кластера, тк среди потенциальных микрокластеров
                             уже может быть кластер с таким id */
                         nearestCluster.setId(getPotentialMicroClustering().getLastClusterId() + 1);
-                        getPotentialMicroClustering().addCluster(nearestCluster);
+                        getPotentialMicroClustering().addCluster(nearestCluster, currentTimestamp);
                     }
                 }
             }
             if (!merged) {
                 StatusesCluster newCluster = new StatusesCluster(getOutlierMicroClustering().getLastClusterId() + 1, lambda);
                 newCluster.assignPoint(status);
-                getOutlierMicroClustering().addCluster(newCluster);
+                getOutlierMicroClustering().addCluster(newCluster, currentTimestamp);
                 if (withSubClustering) newCluster.createSubClustering(minSimilarity, mu, beta);
             }
         }
-        // TODO: здесь какой-то косяк, очень долго выполняется
-        // TODO: походу был из-за того, что я бд не включил, надо проверить
 //        if (numberOfProcessedUnits % 10000 == 0) {
         if (currentTimestamp % tp == 0) {
             ArrayList<StatusesCluster> removalList = new ArrayList<>();
             for (StatusesCluster c : getPotentialMicroClustering().getClusters())
                 if (c.getWeight(currentTimestamp) < beta * mu)
+                    removalList.add(c);
+                // если последние 10 dbscan-ов добавляли в среднем меньше 10 сообщений, то удаляем кластер
+                else if (c.getRatePerUnitQueue().size() == 10 && c.getMeanRatePerUnit() < 10)
                     removalList.add(c);
                 else if (withSubClustering) {
                     List<StatusesCluster> subClustersRemovalList = new ArrayList<>();
@@ -145,14 +146,14 @@ public class DenStream {
                         c.getOutlierSubClustering().getClusters().remove(subCluster);
                 }
             for (StatusesCluster c : removalList) {
-//                removedMicroClusterDao.saveStatistics(getRemovedMicroClusterStatistics(c, (byte) 1));
+                removedMicroClusterDao.saveStatistics(getRemovedMicroClusterStatistics(c, (byte) 1));
                 getPotentialMicroClustering().getClusters().remove(c);
             }
 
             removalList.clear();
             for (StatusesCluster c : getOutlierMicroClustering().getClusters()) {
                 long t0 = c.getCreationTime();
-                double xsi1 = Math.pow(2, (-lambda * (System.currentTimeMillis() - t0 + tp))) - 1;
+                double xsi1 = Math.pow(2, (-lambda * (currentTimestamp - t0 + tp))) - 1;
                 double xsi2 = Math.pow(2, -lambda * tp) - 1;
                 double xsi = xsi1 / xsi2;
                 if (c.getWeight(currentTimestamp) < xsi)
@@ -163,9 +164,10 @@ public class DenStream {
                 getOutlierMicroClustering().getClusters().remove(c);
             }
         }
-        if (numberOfProcessedUnits == 107000) {
-            System.out.println("50000 tweets processed");
-        }
+    }
+
+    public int getNumberOfProcessedUnits() {
+        return numberOfProcessedUnits;
     }
 
     private void initialDbscan() {
@@ -177,7 +179,7 @@ public class DenStream {
                 if (getPotentialMicroClustering().findClusterById(point.getClusterId()) == null) {
                     StatusesCluster cluster = new StatusesCluster(point.getClusterId(), lambda);
                     cluster.assignPoint(point.getStatus());
-                    getPotentialMicroClustering().addCluster(cluster);
+                    getPotentialMicroClustering().addCluster(cluster, currentTimestamp);
                 }
                 else {
                     StatusesCluster cluster = getPotentialMicroClustering().findClusterById(point.getClusterId());
@@ -348,8 +350,8 @@ public class DenStream {
 
     protected RemovedMicroClusterStatistics getRemovedMicroClusterStatistics(StatusesCluster cluster, byte isPotential) {
         RemovedMicroClusterStatistics statistics = new RemovedMicroClusterStatistics();
-        statistics.setCreationTime(cluster.getCreationTime());
-        statistics.setLastUpdateTIme(cluster.getLastUpdateTime());
+        statistics.setCreationTime(cluster.getActualCreationTime());
+        statistics.setLastUpdateTIme(cluster.getActualUpdateTime());
         statistics.setNumberOfDocuments(cluster.getSize());
         statistics.setIsPotential(isPotential);
         Map<String, Integer> sortedTopTen = MapUtil.putFirstEntries(10, MapUtil.sortByValue(cluster.getTfIdf().getTermFrequencyMap()));

@@ -3,6 +3,7 @@ package diploma.clustering.clusters;
 import diploma.clustering.CosineSimilarity;
 import diploma.clustering.EnhancedStatus;
 import diploma.clustering.tfidf.TfIdf;
+import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.mapdb.DataInput2;
 import org.mapdb.DataOutput2;
 import org.mapdb.Serializer;
@@ -26,7 +27,7 @@ public class StatusesCluster extends Cluster<EnhancedStatus> implements Serializ
 
     public StatusesCluster(int clusterId, double lambda) {
         super(clusterId, lambda);
-        tfIdf = new TfIdf();
+        this.tfIdf = new TfIdf();
     }
 
     @Override
@@ -36,6 +37,7 @@ public class StatusesCluster extends Cluster<EnhancedStatus> implements Serializ
         processedPerTimeUnit++;
 //        this.lastUpdateTime = System.currentTimeMillis();
         this.lastUpdateTime = point.getCreationTimestamp();
+        this.actualUpdateTime = System.currentTimeMillis();
         tfIdf.updateForNewDocument(Long.toString(point.getStatus().getId()), point.getNormalizedText());
         if (this.mostRelevantTweet != null) {
             if (CosineSimilarity.cosineSimilarity(
