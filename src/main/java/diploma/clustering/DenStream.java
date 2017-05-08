@@ -350,6 +350,7 @@ public class DenStream {
 
     protected RemovedMicroClusterStatistics getRemovedMicroClusterStatistics(StatusesCluster cluster, byte isPotential) {
         RemovedMicroClusterStatistics statistics = new RemovedMicroClusterStatistics();
+        statistics.setClusterId(cluster.getId());
         statistics.setCreationTime(cluster.getActualCreationTime());
         statistics.setLastUpdateTIme(cluster.getActualUpdateTime());
         statistics.setNumberOfDocuments(cluster.getSize());
