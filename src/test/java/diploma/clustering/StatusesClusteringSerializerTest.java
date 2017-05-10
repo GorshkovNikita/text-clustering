@@ -126,16 +126,16 @@ public class StatusesClusteringSerializerTest {
         StatusesCluster.MapDbSerializer clusterSerializer = new StatusesCluster.MapDbSerializer();
         try {
             DataOutput2 dataOutput2 = new DataOutput2();
-//            tfIdfSerializer.serialize(dataOutput2, secondTfIdf);
-//            TfIdf tfIdf = tfIdfSerializer.deserialize(new DataInput2.ByteArray(dataOutput2.buf), -1);
-//            assertEquals(secondTfIdf, tfIdf);
-//
-//            dataOutput2 = new DataOutput2();
-//            clusterSerializer.serialize(dataOutput2, firstCluster);
-//            StatusesCluster cluster = clusterSerializer.deserialize(new DataInput2.ByteArray(dataOutput2.buf), -1);
-//            assertEquals(firstCluster, cluster);
-//
-//            dataOutput2 = new DataOutput2();
+            tfIdfSerializer.serialize(dataOutput2, secondTfIdf);
+            TfIdf tfIdf = tfIdfSerializer.deserialize(new DataInput2.ByteArray(dataOutput2.buf), -1);
+            assertEquals(secondTfIdf, tfIdf);
+
+            dataOutput2 = new DataOutput2();
+            clusterSerializer.serialize(dataOutput2, firstCluster);
+            StatusesCluster cluster = clusterSerializer.deserialize(new DataInput2.ByteArray(dataOutput2.buf), -1);
+            assertEquals(firstCluster, cluster);
+
+            dataOutput2 = new DataOutput2();
             serializer.serialize(dataOutput2, statusesClustering);
             StatusesClustering clustering = serializer.deserialize(new DataInput2.ByteArray(dataOutput2.buf), -1);
             assertEquals(statusesClustering, clustering);

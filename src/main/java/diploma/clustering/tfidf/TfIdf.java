@@ -7,6 +7,7 @@ import org.mapdb.DataInput2;
 import org.mapdb.DataOutput2;
 import org.mapdb.Serializer;
 
+import javax.validation.constraints.Null;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ public class TfIdf implements Serializable {
      */
     private static int globalDocumentNumber = 0;
     private static Map<String, Integer> globalNumberOfDocumentsWithTermMap = new HashMap<>();
+    private static final Object lock = new Object();
     /**
      * Количество документов, связанных с конкретным объектом TfIdf
      * В данном случае каждый объект TfIdf связан с кластером, таким образом documentNumber -
@@ -86,21 +88,43 @@ public class TfIdf implements Serializable {
             // если в этом документе уже был такой терм, то не увеличиваем количество документов, в которых он встречается
             if (!passedTerms.contains(term)) {
                 updateFrequencyMapForTerm(this.numberOfDocumentsWithTermMap, term);
-                updateFrequencyMapForTerm(globalNumberOfDocumentsWithTermMap, term);
+//                synchronized (lock) {
+                    updateFrequencyMapForTerm(globalNumberOfDocumentsWithTermMap, term);
+//                }
+                if (globalNumberOfDocumentsWithTermMap.get(term) == null && this.numberOfDocumentsWithTermMap.get(term) != null)
+                    System.out.println("Бред");
                 passedTerms.add(term);
             }
 //                this.termDocumentCoOccurrenceMatrix.put(term, docName, 1);
 //            }
         }
+
+        // TEMP: test 20 terms
+        if (this.termFrequencyMap.size() > 100)
+            this.termFrequencyMap = (MapUtil.putFirstEntries(75, MapUtil.sortByValue(this.termFrequencyMap)));
         this.wasUpdated = true;
     }
 
     public Double getTermIdf(String term) {
-        return Math.log10((double) this.documentNumber / (double) this.numberOfDocumentsWithTermMap.get(term));
+//        long start = System.currentTimeMillis();
+        Double idf = Math.log10((double) this.documentNumber / (double) this.numberOfDocumentsWithTermMap.get(term));
+//        long end = System.currentTimeMillis() - start;
+//        System.out.println("local term idf completed in " + end);
+        return idf;
     }
 
     public synchronized static Double getGlobalTermIdf(String term) {
-        return Math.log10((double) globalDocumentNumber / (double) globalNumberOfDocumentsWithTermMap.get(term));
+//        long start = System.currentTimeMillis();
+        Double idf = 0.0;
+        try {
+            idf = Math.log10((double) globalDocumentNumber / (double) globalNumberOfDocumentsWithTermMap.get(term));
+        }
+        catch (NullPointerException ex) {
+            System.out.println(ex.getCause());
+        }
+//        long end = System.currentTimeMillis() - start;
+//        System.out.println("global term idf completed in " + end);
+        return idf;
     }
 
     /**
@@ -164,6 +188,7 @@ public class TfIdf implements Serializable {
             if (!tfIdfMap.containsKey(term)) {
                 double tf = (double) docTermFrequencyMap.get(term) / (double) termsNumber;
                 // умножаем на количество документов, тк этого терма нет в карте idf => он не встрачался еще ни разу
+                // TODO: попробовать умножать на 1, что логичнее
                 tfIdfMap.put(term, tf * globalDocumentNumber);
             }
         }
