@@ -216,7 +216,7 @@ public class DenStream {
 //        DenStream denStream = new DenStream(10, 20, 10.0, -Math.log(3.0) / Math.log(2)/(double) 400, 0.4);
         DenStream denStream = new DenStream(10, 20, 10.0, 0.000001, 0.2);
 
-        try (BufferedReader br = new BufferedReader(new FileReader("D:\\MSU\\diploma\\tweets-sets\\2017-04-09-sport-events.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("D:\\MSU\\diploma\\tweets-sets\\2017-04-09-sport-events-400000.txt"))) {
             String line = null;
             int i = 0;
             do {
@@ -312,7 +312,8 @@ public class DenStream {
                     for (Cluster<StatusesCluster> cluster : macroClustering.getClusters())
                         statisticsDao.saveStatistics(denStream.getClusterStatistics(cluster, time,
                                 numberOfDocuments - numberOfDocumentsIgnored, 100,
-                                denStream.getPotentialMicroClustering().getClusters().size()));
+                                denStream.getPotentialMicroClustering().getClusters().size(),
+                                numberOfDocumentsIgnored));
 //                    }
 
                     for (StatusesCluster cluster : denStream.getPotentialMicroClustering().getClusters())
@@ -339,7 +340,7 @@ public class DenStream {
         }
     }
 
-    protected MacroClusteringStatistics getClusterStatistics(Cluster<StatusesCluster> cluster, Timestamp time, Integer totalProcessedTweets, double rate, int numberOfPotentialMicroClusters) {
+    protected MacroClusteringStatistics getClusterStatistics(Cluster<StatusesCluster> cluster, Timestamp time, Integer totalProcessedTweets, double rate, int numberOfPotentialMicroClusters, int numberOfFiltered) {
         MacroClusteringStatistics statistics = new MacroClusteringStatistics();
         int totalNumberOfDocuments = 0;
         int totalProcessedPerTimeUnit = 0;
@@ -360,6 +361,7 @@ public class DenStream {
         statistics.setAbsorbedClusterIds(cluster.getAbsorbedClusterIds());
         statistics.setMostRelevantTweetId(Long.toString(cluster.getAssignedPoints().get(0).getMostRelevantTweet().getStatus().getId()));
         statistics.setTotalProcessedTweets(totalProcessedTweets);
+        statistics.setNumberOfFiltered(numberOfFiltered);
         statistics.setRate(rate);
         statistics.setNumberOfPotentialMicroClusters(numberOfPotentialMicroClusters);
         return statistics;
