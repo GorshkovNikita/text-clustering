@@ -40,7 +40,7 @@ public class DenStream {
     private double beta;
     /* Чем больше lambda, тем меньше вес старых кластеров,
      * для начального значения норм около 0,0000001 */
-    protected double lambda;
+    public double lambda;
     private double minSimilarity;
     /* Минимальное время превращения потенциального микрокластера в шум. */
     private double tp;
@@ -340,7 +340,7 @@ public class DenStream {
         }
     }
 
-    protected MacroClusteringStatistics getClusterStatistics(Cluster<StatusesCluster> cluster, Timestamp time, Integer totalProcessedTweets, double rate, int numberOfPotentialMicroClusters, int numberOfFiltered) {
+    public MacroClusteringStatistics getClusterStatistics(Cluster<StatusesCluster> cluster, Timestamp time, Integer totalProcessedTweets, double rate, int numberOfPotentialMicroClusters, int numberOfFiltered) {
         MacroClusteringStatistics statistics = new MacroClusteringStatistics();
         int totalNumberOfDocuments = 0;
         int totalProcessedPerTimeUnit = 0;
@@ -367,7 +367,7 @@ public class DenStream {
         return statistics;
     }
 
-    protected RemovedMicroClusterStatistics getRemovedMicroClusterStatistics(StatusesCluster cluster, byte isPotential) {
+    public RemovedMicroClusterStatistics getRemovedMicroClusterStatistics(StatusesCluster cluster, byte isPotential) {
         RemovedMicroClusterStatistics statistics = new RemovedMicroClusterStatistics();
         statistics.setClusterId(cluster.getId());
         statistics.setCreationTime(cluster.getActualCreationTime());

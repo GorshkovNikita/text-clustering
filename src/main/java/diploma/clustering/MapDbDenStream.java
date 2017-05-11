@@ -185,7 +185,8 @@ public class MapDbDenStream extends DenStream {
                     for (Cluster<StatusesCluster> cluster : macroClustering.getClusters())
                         statisticsDao.saveStatistics(denStream.getClusterStatistics(cluster, time,
                                 numberOfDocuments - numberOfDocumentsIgnored, 100,
-                                denStream.getPotentialMicroClustering().getClusters().size()));
+                                denStream.getPotentialMicroClustering().getClusters().size(),
+                                numberOfDocumentsIgnored));
 //                    }
 
                     for (StatusesCluster cluster : denStream.getPotentialMicroClustering().getClusters())
