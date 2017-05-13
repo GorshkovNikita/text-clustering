@@ -83,6 +83,7 @@ public class MapDbDenStream extends DenStream {
         int numberOfDocuments = 0;
         int numberOfDocumentsIgnored = 0;
         int minNumberOfCommonTerms = 6;
+        int timeFactor = 0;
 //        DenStream denStream = new DenStream(10, 20, 10.0, -Math.log(3.0) / Math.log(2)/(double) 400, 0.4);
         MapDbDenStream denStream = new MapDbDenStream(10, 20, 10.0, 0.000001, 0.2);
 
@@ -181,9 +182,11 @@ public class MapDbDenStream extends DenStream {
                     // т.к окно вызывается каждую минуту, то для сохранения статистики каждые 5 минут нужно каждые 5 раз вызывать emit
 //                    if (++denStream.executeCounter % 5 == 0) {
 //                    denStream.executeCounter++;
+                    timeFactor++;
                     Timestamp time = new Timestamp(new Date().getTime());
                     for (Cluster<StatusesCluster> cluster : macroClustering.getClusters())
                         statisticsDao.saveStatistics(denStream.getClusterStatistics(cluster, time,
+                                timeFactor,
                                 numberOfDocuments - numberOfDocumentsIgnored, 100,
                                 denStream.getPotentialMicroClustering().getClusters().size(),
                                 numberOfDocumentsIgnored));

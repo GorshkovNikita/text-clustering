@@ -32,6 +32,7 @@ public class PlainDenStream {
     private int numberOfDocuments = 0;
     private int numberOfDocumentsIgnored = 0;
     private int minNumberOfCommonTerms = 6;
+    private int timeFactor;
     private StatusesFilter sportsBetsFilter;
     private StatusesFilter tweetLengthFilter;
     private long totalTime;
@@ -51,6 +52,7 @@ public class PlainDenStream {
             @Override
             public void run() {
                 totalTime += 30000;
+                timeFactor++;
                 List<DbscanStatusesCluster> incomingPoints = new ArrayList<>();
                 for (StatusesCluster cluster : PlainDenStream.this.denStream.getPotentialMicroClustering().getClusters()) {
                     if (cluster.getTfIdf().getTermFrequencyMap().size() > 100)
@@ -86,6 +88,7 @@ public class PlainDenStream {
                 Timestamp time = new Timestamp(new Date().getTime());
                 for (Cluster<StatusesCluster> cluster : macroClustering.getClusters())
                     PlainDenStream.this.macroClusteringStatisticsDao.saveStatistics(PlainDenStream.this.denStream.getClusterStatistics(cluster, time,
+                            timeFactor,
                             PlainDenStream.this.numberOfDocuments - PlainDenStream.this.numberOfDocumentsIgnored,
                             PlainDenStream.this.numberOfDocuments / (double) totalTime * 1000,
                             PlainDenStream.this.denStream.getPotentialMicroClustering().getClusters().size(),

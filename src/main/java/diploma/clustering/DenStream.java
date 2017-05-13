@@ -311,6 +311,7 @@ public class DenStream {
                     Timestamp time = new Timestamp(new Date().getTime());
                     for (Cluster<StatusesCluster> cluster : macroClustering.getClusters())
                         statisticsDao.saveStatistics(denStream.getClusterStatistics(cluster, time,
+                                denStream.executeCounter,
                                 numberOfDocuments - numberOfDocumentsIgnored, 100,
                                 denStream.getPotentialMicroClustering().getClusters().size(),
                                 numberOfDocumentsIgnored));
@@ -340,7 +341,7 @@ public class DenStream {
         }
     }
 
-    public MacroClusteringStatistics getClusterStatistics(Cluster<StatusesCluster> cluster, Timestamp time, Integer totalProcessedTweets, double rate, int numberOfPotentialMicroClusters, int numberOfFiltered) {
+    public MacroClusteringStatistics getClusterStatistics(Cluster<StatusesCluster> cluster, Timestamp time, int timeFactor, Integer totalProcessedTweets, double rate, int numberOfPotentialMicroClusters, int numberOfFiltered) {
         MacroClusteringStatistics statistics = new MacroClusteringStatistics();
         int totalNumberOfDocuments = 0;
         int totalProcessedPerTimeUnit = 0;
@@ -353,7 +354,7 @@ public class DenStream {
         }
         topTenTerms = MapUtil.putFirstEntries(10, MapUtil.sortByValue(topTenTerms));
         statistics.setTimestamp(time);
-        statistics.setTimeFactor(statisticsCounter);
+        statistics.setTimeFactor(timeFactor);
         statistics.setClusterId(cluster.getId());
         statistics.setNumberOfDocuments(totalNumberOfDocuments);
         statistics.setTopTerms(topTenTerms);
