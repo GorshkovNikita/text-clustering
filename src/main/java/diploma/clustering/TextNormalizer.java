@@ -50,7 +50,7 @@ public class TextNormalizer {
             "stay","matter","voice","post","type","ball","help","stop","bruh","couple","list","moment","attention","kinda","date","anybody","imma","idiot","play","shoe","shoes","great",
             "field","dont","record","niggas","yeah","period","faith","know","note","pretty","character","read","podcast","effort","honey","schedule","crap","hahaha","asshole","doubt",
             "north", "south", "west","east","city","title","#news","national","daily","event","half","talk","park","line","center","loss","recap","town","ride","water","level","review","area",
-            "online","sale","business","style","change","music","passion","shirt",
+            "online","sale","business","style","change","music","passion","shirt","reaction","breaking",
 
             "weightlifting", "sports", "sport", "football", "cycling", "snooker", "tennis", "hockey", "skating", "superbike","basketball", "golf","cricket","skiing",
             "baseball", "volleyball", "boxing", "rugby", "athletics", "cricket", "soccer", "formula1",

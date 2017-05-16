@@ -57,7 +57,7 @@ public class PlainDenStream {
                 for (StatusesCluster cluster : PlainDenStream.this.denStream.getPotentialMicroClustering().getClusters()) {
                     if (cluster.getTfIdf().getTermFrequencyMap().size() > 100)
                         cluster.getTfIdf().setTermFrequencyMap(MapUtil.putFirstEntries(75, MapUtil.sortByValue(cluster.getTfIdf().getTermFrequencyMap())));
-                    incomingPoints.add(new SimplifiedDbscanStatusesCluster(cluster, minNumberOfCommonTerms, cluster.getMacroClusterId()));
+                    incomingPoints.add(new DbscanStatusesCluster(cluster, cluster.getMacroClusterId()));
                 }
 
                 for (StatusesCluster cluster : PlainDenStream.this.denStream.getOutlierMicroClustering().getClusters()) {
@@ -70,7 +70,7 @@ public class PlainDenStream {
                 Clustering<Cluster<StatusesCluster>, StatusesCluster> macroClustering = new Clustering<>();
                 for (DbscanPoint point: incomingPoints) { //statefulDbscan.getAllPoints()) {
                     if (point.isAssigned()) {
-                        StatusesCluster statusesCluster = ((SimplifiedDbscanStatusesCluster) point).getStatusesCluster();
+                        StatusesCluster statusesCluster = ((DbscanStatusesCluster) point).getStatusesCluster();
                         if (macroClustering.findClusterById(point.getClusterId()) == null) {
 //                                if (statusesCluster.getMacroClusterId() == 0)
                             statusesCluster.setMacroClusterId(point.getClusterId());
